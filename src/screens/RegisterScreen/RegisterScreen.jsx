@@ -26,6 +26,9 @@ export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Показываем кнопку входа, если номер уже зарегистрирован
+  const [isRegistered, setIsRegistered] = useState(false);
+
   // Живой cooldown
   const [retryUntil, setRetryUntil] = useState(null);
   const [retryAfter, setRetryAfter] = useState(0);
@@ -34,13 +37,10 @@ export default function RegisterScreen() {
   const otpInputRef = useRef(null);
 
   const opacity = useRef(new Animated.Value(0)).current;
-
   const translateY = useRef(new Animated.Value(30)).current;
-
   const logoScale = useRef(new Animated.Value(0.88)).current;
 
   const otpOverlayOpacity = useRef(new Animated.Value(0)).current;
-
   const otpContentScale = useRef(new Animated.Value(0.96)).current;
 
   /*
@@ -134,7 +134,7 @@ export default function RegisterScreen() {
     if (retryAfter === 0 && error.includes("Повторная отправка")) {
       setError("");
     }
-  }, [retryAfter]);
+  }, [retryAfter, error]);
 
   /*
    * PHONE VALIDATION
@@ -152,7 +152,48 @@ export default function RegisterScreen() {
     const digits = value.replace(/\D/g, "").slice(0, 9);
 
     setPhone(`+996${digits}`);
+
     setError("");
+    setIsRegistered(false);
+  };
+
+  /*
+   * EXTRACT COOLDOWN
+   */
+
+  const getCooldownSeconds = (data, response) => {
+    const fromBody =
+      Number(data?.retryAfterSeconds) ||
+      Number(data?.retry_after) ||
+      Number(data?.retryAfter);
+
+    const fromHeader = Number(response.headers.get("Retry-After")) || 0;
+
+    return fromBody || fromHeader || 60;
+  };
+
+  /*
+   * CHECK EXISTING USER
+   */
+
+  const isExistingUserError = (response, data) => {
+    if (response.status === 409) {
+      return true;
+    }
+
+    const message = String(
+      data?.message || data?.detail || data?.error || "",
+    ).toLowerCase();
+
+    return (
+      message.includes("already registered") ||
+      message.includes("already exists") ||
+      message.includes("phone exists") ||
+      message.includes("phone already") ||
+      message.includes("номер уже зарегистрирован") ||
+      message.includes("номер уже существует") ||
+      message.includes("пользователь уже зарегистрирован")
+    );
   };
 
   /*
@@ -172,6 +213,7 @@ export default function RegisterScreen() {
     try {
       setLoading(true);
       setError("");
+      setIsRegistered(false);
 
       const response = await fetch(`${API_URL}/api/v1/auth/send-otp`, {
         method: "POST",
@@ -190,7 +232,9 @@ export default function RegisterScreen() {
        * EXISTING USER
        */
 
-      if (response.status === 409) {
+      if (isExistingUserError(response, data)) {
+        setIsRegistered(true);
+
         setError("Этот номер уже зарегистрирован. Войдите в свой аккаунт.");
 
         return;
@@ -201,10 +245,7 @@ export default function RegisterScreen() {
        */
 
       if (response.status === 429) {
-        const seconds =
-          data.retryAfterSeconds ||
-          Number(response.headers.get("Retry-After")) ||
-          60;
+        const seconds = getCooldownSeconds(data, response);
 
         setRetryUntil(Date.now() + seconds * 1000);
 
@@ -218,7 +259,9 @@ export default function RegisterScreen() {
        */
 
       if (!response.ok) {
-        throw new Error(data.message || "Не удалось отправить код");
+        throw new Error(
+          data?.message || data?.detail || "Не удалось отправить код",
+        );
       }
 
       /*
@@ -227,10 +270,7 @@ export default function RegisterScreen() {
 
       setStep("OTP");
 
-      const cooldownSeconds =
-        data.retryAfterSeconds ||
-        Number(response.headers.get("Retry-After")) ||
-        60;
+      const cooldownSeconds = getCooldownSeconds(data, response);
 
       setRetryUntil(Date.now() + cooldownSeconds * 1000);
 
@@ -238,7 +278,9 @@ export default function RegisterScreen() {
         otpInputRef.current?.focus();
       }, 300);
     } catch (err) {
-      setError(err.message || "Что-то пошло не так. Попробуйте ещё раз.");
+      console.error("SEND OTP ERROR:", err);
+
+      setError(err?.message || "Что-то пошло не так. Попробуйте ещё раз.");
     } finally {
       setLoading(false);
     }
@@ -277,17 +319,31 @@ export default function RegisterScreen() {
       if (!response.ok) {
         setOtp("");
 
-        setError(data.message || "Неверный код подтверждения");
+        setError(data?.message || data?.detail || "Неверный код подтверждения");
+
+        return;
+      }
+
+      /*
+       * EXISTING USER / LOGIN REQUIRED
+       */
+
+      if (data.stage === "LOGIN_REQUIRED" || data.stage === "EXISTING_USER") {
+        setIsRegistered(true);
+        setError("Этот номер уже зарегистрирован. Войдите в аккаунт.");
 
         return;
       }
 
       /*
        * PROFILE REQUIRED
+       *
+       * Если пользователь новый, отправляем
+       * на создание профиля.
        */
 
       if (data.stage === "PROFILE_REQUIRED") {
-        router.replace("/login");
+        router.replace("/profile");
         return;
       }
 
@@ -296,6 +352,19 @@ export default function RegisterScreen() {
        */
 
       if (data.stage === "FULL_ACCESS") {
+        router.replace("/home");
+        return;
+      }
+
+      /*
+       * Если backend просто вернул успешную авторизацию
+       * без stage.
+       */
+
+      if (
+        response.ok &&
+        (data.accessToken || data.access_token || data.token)
+      ) {
         router.replace("/home");
         return;
       }
@@ -341,6 +410,14 @@ export default function RegisterScreen() {
     }
 
     await sendOtp();
+  };
+
+  /*
+   * GO TO LOGIN
+   */
+
+  const goToLogin = () => {
+    router.push("/login");
   };
 
   return (
@@ -415,9 +492,7 @@ export default function RegisterScreen() {
           ]}
         >
           <View style={styles.decorationLine} />
-
           <View style={styles.diamond} />
-
           <View style={styles.decorationLine} />
         </Animated.View>
 
@@ -467,15 +542,18 @@ export default function RegisterScreen() {
                   style={styles.phoneInput}
                   maxLength={9}
                   autoFocus
+                  editable={!loading}
                 />
               </View>
 
               <Pressable
                 onPress={sendOtp}
-                disabled={loading}
+                disabled={loading || retryAfter > 0 || isRegistered}
                 style={({ pressed }) => [
                   styles.primaryButton,
                   pressed && styles.buttonPressed,
+                  (loading || retryAfter > 0 || isRegistered) &&
+                    styles.buttonDisabled,
                 ]}
               >
                 <LinearGradient
@@ -492,11 +570,38 @@ export default function RegisterScreen() {
                 >
                   {loading ? (
                     <ActivityIndicator color="#211A10" />
+                  ) : retryAfter > 0 ? (
+                    <Text style={styles.primaryText}>
+                      ПОВТОРИТЬ ЧЕРЕЗ {retryAfter} СЕК.
+                    </Text>
                   ) : (
                     <Text style={styles.primaryText}>ПОЛУЧИТЬ КОД</Text>
                   )}
                 </LinearGradient>
               </Pressable>
+
+              {/* LOGIN */}
+
+              <Pressable
+                onPress={goToLogin}
+                disabled={loading}
+                style={styles.loginButton}
+              >
+                <Text style={styles.loginText}>
+                  Уже есть аккаунт?{" "}
+                  <Text style={styles.loginAccent}>Войти</Text>
+                </Text>
+              </Pressable>
+
+              {/* REGISTERED NUMBER */}
+
+              {isRegistered && (
+                <Pressable onPress={goToLogin} style={styles.registeredButton}>
+                  <Text style={styles.registeredButtonText}>
+                    ВОЙТИ В АККАУНТ
+                  </Text>
+                </Pressable>
+              )}
             </>
           )}
 
@@ -514,8 +619,6 @@ export default function RegisterScreen() {
                 ],
               }}
             >
-              {/* GLASS CARD */}
-
               <View style={styles.otpCard}>
                 <BlurView intensity={35} tint="dark" style={styles.otpBlur} />
 
@@ -558,6 +661,7 @@ export default function RegisterScreen() {
                       maxLength={6}
                       style={styles.hiddenInput}
                       autoFocus
+                      editable={!loading}
                     />
                   </Pressable>
 
@@ -586,12 +690,38 @@ export default function RegisterScreen() {
                         : "Отправить код повторно"}
                     </Text>
                   </Pressable>
+
+                  {/* CHANGE PHONE */}
+
+                  <Pressable
+                    onPress={() => {
+                      if (loading) return;
+
+                      setStep("PHONE");
+                      setOtp("");
+                      setError("");
+                      setRetryUntil(null);
+                    }}
+                    disabled={loading}
+                  >
+                    <Text style={styles.changePhone}>Изменить номер</Text>
+                  </Pressable>
                 </View>
               </View>
             </Animated.View>
           )}
 
           {!!error && <Text style={styles.error}>{error}</Text>}
+
+          {/* LOGIN AFTER ERROR */}
+
+          {step === "PHONE" && isRegistered && !!error && (
+            <Pressable onPress={goToLogin} style={styles.errorLoginButton}>
+              <Text style={styles.errorLoginButtonText}>
+                Войти с этим номером →
+              </Text>
+            </Pressable>
+          )}
         </Animated.View>
       </KeyboardAvoidingView>
     </View>

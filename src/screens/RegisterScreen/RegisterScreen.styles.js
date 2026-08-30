@@ -411,4 +411,75 @@ export default StyleSheet.create({
 
     fontWeight: "300",
   },
+
+  buttonDisabled: {
+    opacity: 0.55,
+  },
+
+  loginButton: {
+    marginTop: 22,
+    paddingVertical: 8,
+  },
+
+  loginText: {
+    color: "rgba(234,227,192,0.55)",
+    fontSize: 13,
+    textAlign: "center",
+  },
+
+  loginAccent: {
+    color: "#B29259",
+    fontWeight: "700",
+  },
+
+  registeredButton: {
+    width: "100%",
+    height: 52,
+
+    marginTop: 10,
+
+    borderRadius: 15,
+
+    borderWidth: 1,
+    borderColor: "rgba(178,146,89,0.5)",
+
+    backgroundColor: "rgba(178,146,89,0.08)",
+
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  registeredButtonText: {
+    color: "#D2B477",
+
+    fontSize: 12,
+    fontWeight: "800",
+
+    letterSpacing: 1.8,
+  },
+
+  changePhone: {
+    marginTop: 20,
+
+    color: "rgba(234,227,192,0.4)",
+
+    fontSize: 12,
+
+    textDecorationLine: "underline",
+  },
+
+  errorLoginButton: {
+    marginTop: 10,
+
+    paddingVertical: 8,
+  },
+
+  errorLoginButtonText: {
+    color: "#D2B477",
+
+    fontSize: 13,
+    fontWeight: "700",
+
+    textAlign: "center",
+  },
 });

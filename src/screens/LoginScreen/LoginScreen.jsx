@@ -29,7 +29,10 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Реальное время окончания cooldown
+  // Если аккаунт не найден
+  const [accountNotFound, setAccountNotFound] = useState(false);
+
+  // Реальный cooldown
   const [retryUntil, setRetryUntil] = useState(null);
   const [retryAfter, setRetryAfter] = useState(0);
 
@@ -67,7 +70,10 @@ export default function LoginScreen() {
   }, []);
 
   /*
-   * LIVE OTP COOLDOWN
+   * LIVE COOLDOWN
+   *
+   * Таймер считается от retryUntil, поэтому он
+   * не зависит от количества ререндеров компонента.
    */
 
   useEffect(() => {
@@ -97,14 +103,14 @@ export default function LoginScreen() {
   }, [retryUntil]);
 
   /*
-   * REMOVE COOLDOWN ERROR
+   * CLEAR COOLDOWN ERROR
    */
 
   useEffect(() => {
     if (retryAfter === 0 && error.includes("Повторная отправка")) {
       setError("");
     }
-  }, [retryAfter]);
+  }, [retryAfter, error]);
 
   /*
    * PHONE VALIDATION
@@ -122,7 +128,17 @@ export default function LoginScreen() {
     const digits = value.replace(/\D/g, "").slice(0, 9);
 
     setPhone(`+996${digits}`);
+
     setError("");
+    setAccountNotFound(false);
+  };
+
+  /*
+   * GO TO REGISTER
+   */
+
+  const goToRegister = () => {
+    router.push("/register");
   };
 
   /*
@@ -131,6 +147,7 @@ export default function LoginScreen() {
 
   const sendOtp = async () => {
     if (!isValidPhone()) {
+      setAccountNotFound(false);
       setError("Введите корректный номер телефона");
       return;
     }
@@ -142,6 +159,7 @@ export default function LoginScreen() {
     try {
       setLoading(true);
       setError("");
+      setAccountNotFound(false);
 
       const response = await fetch(`${API_URL}/api/v1/auth/login/send-otp`, {
         method: "POST",
@@ -162,7 +180,7 @@ export default function LoginScreen() {
 
       if (response.status === 429) {
         const seconds =
-          data.retryAfterSeconds ||
+          Number(data.retryAfterSeconds) ||
           Number(response.headers.get("Retry-After")) ||
           60;
 
@@ -170,6 +188,31 @@ export default function LoginScreen() {
 
         setError(`Повторная отправка будет доступна через ${seconds} сек.`);
 
+        return;
+      }
+
+      /*
+       * ACCOUNT NOT FOUND
+       *
+       * Backend может вернуть 404 или 400.
+       */
+
+      const backendMessage = String(
+        data.message || data.error || "",
+      ).toLowerCase();
+
+      const isAccountNotFound =
+        response.status === 404 ||
+        backendMessage.includes("not found") ||
+        backendMessage.includes("user not found") ||
+        backendMessage.includes("user does not exist") ||
+        backendMessage.includes("не зарегистрирован") ||
+        backendMessage.includes("пользователь не найден") ||
+        backendMessage.includes("аккаунт не найден");
+
+      if (isAccountNotFound) {
+        setAccountNotFound(true);
+        setError("");
         return;
       }
 
@@ -189,10 +232,8 @@ export default function LoginScreen() {
 
       setStep("OTP");
 
-      // Базовый cooldown после успешной отправки.
-      // Если backend вернёт своё значение — используем его.
       const cooldownSeconds =
-        data.retryAfterSeconds ||
+        Number(data.retryAfterSeconds) ||
         Number(response.headers.get("Retry-After")) ||
         60;
 
@@ -202,6 +243,8 @@ export default function LoginScreen() {
         otpInputRef.current?.focus();
       }, 300);
     } catch (err) {
+      console.error("LOGIN SEND OTP ERROR:", err);
+
       setError(
         err.message || "Не удалось отправить код. Проверьте соединение.",
       );
@@ -235,6 +278,29 @@ export default function LoginScreen() {
       });
 
       const data = await response.json().catch(() => ({}));
+
+      /*
+       * ACCOUNT NOT FOUND
+       */
+
+      const backendMessage = String(
+        data.message || data.error || "",
+      ).toLowerCase();
+
+      const isAccountNotFound =
+        response.status === 404 ||
+        backendMessage.includes("not found") ||
+        backendMessage.includes("user not found") ||
+        backendMessage.includes("не зарегистрирован") ||
+        backendMessage.includes("пользователь не найден") ||
+        backendMessage.includes("аккаунт не найден");
+
+      if (isAccountNotFound) {
+        setOtp("");
+        setAccountNotFound(true);
+        setStep("PHONE");
+        return;
+      }
 
       /*
        * WRONG CODE
@@ -284,9 +350,6 @@ export default function LoginScreen() {
       if (meResponse.status === 200) {
         console.log("AUTHENTICATED USER:", userData);
 
-        // Здесь позже можно сохранить userData
-        // в Context / Zustand / Redux.
-
         router.replace("/home");
 
         return;
@@ -328,6 +391,7 @@ export default function LoginScreen() {
 
     setOtp(cleaned);
     setError("");
+    setAccountNotFound(false);
 
     if (cleaned.length === 6) {
       verifyOtp(cleaned);
@@ -344,6 +408,17 @@ export default function LoginScreen() {
     }
 
     await sendOtp();
+  };
+
+  /*
+   * BACK TO PHONE
+   */
+
+  const changePhone = () => {
+    setStep("PHONE");
+    setOtp("");
+    setError("");
+    setAccountNotFound(false);
   };
 
   return (
@@ -377,7 +452,7 @@ export default function LoginScreen() {
         style={styles.sideOverlay}
       />
 
-      {/* GOLD GLOW */}
+      {/* GLOW */}
 
       <View pointerEvents="none" style={styles.glowWrapper}>
         <View style={styles.glow} />
@@ -434,7 +509,7 @@ export default function LoginScreen() {
             <>
               <Text style={styles.title}>С возвращением</Text>
 
-              <Text style={styles.subtitle}>Введите номер телефона</Text>
+              <Text style={styles.subtitle}>Пожалуйста, войдите в аккаунт</Text>
 
               <View style={styles.inputWrapper}>
                 <Text style={styles.prefix}>+996</Text>
@@ -451,27 +526,71 @@ export default function LoginScreen() {
                 />
               </View>
 
-              <Pressable
-                onPress={sendOtp}
-                disabled={loading}
-                style={({ pressed }) => [
-                  styles.primaryButton,
-                  pressed && styles.buttonPressed,
-                ]}
-              >
-                <LinearGradient
-                  colors={["#D2B477", "#B29259", "#96723F"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.primaryGradient}
+              {/* ACCOUNT NOT FOUND */}
+
+              {accountNotFound && (
+                <View style={styles.accountError}>
+                  <Text style={styles.accountErrorTitle}>
+                    Аккаунт не зарегистрирован
+                  </Text>
+
+                  <Text style={styles.accountErrorText}>
+                    Номер телефона не найден. Зарегистрируйтесь, чтобы создать
+                    аккаунт.
+                  </Text>
+
+                  <Pressable
+                    onPress={goToRegister}
+                    style={({ pressed }) => [
+                      styles.registerButton,
+                      pressed && styles.buttonPressed,
+                    ]}
+                  >
+                    <Text style={styles.registerButtonText}>
+                      ЗАРЕГИСТРИРОВАТЬСЯ
+                    </Text>
+                  </Pressable>
+                </View>
+              )}
+
+              {!accountNotFound && (
+                <Pressable
+                  onPress={sendOtp}
+                  disabled={loading || retryAfter > 0}
+                  style={({ pressed }) => [
+                    styles.primaryButton,
+                    pressed && styles.buttonPressed,
+                    retryAfter > 0 && styles.primaryButtonDisabled,
+                  ]}
                 >
-                  {loading ? (
-                    <ActivityIndicator color="#211A10" />
-                  ) : (
-                    <Text style={styles.primaryText}>ПОЛУЧИТЬ КОД</Text>
-                  )}
-                </LinearGradient>
-              </Pressable>
+                  <LinearGradient
+                    colors={["#D2B477", "#B29259", "#96723F"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.primaryGradient}
+                  >
+                    {loading ? (
+                      <ActivityIndicator color="#211A10" />
+                    ) : retryAfter > 0 ? (
+                      <Text style={styles.primaryText}>
+                        ПОВТОРНО ЧЕРЕЗ {retryAfter} СЕК.
+                      </Text>
+                    ) : (
+                      <Text style={styles.primaryText}>ПОЛУЧИТЬ КОД</Text>
+                    )}
+                  </LinearGradient>
+                </Pressable>
+              )}
+
+              {/* REGISTER DIRECTION */}
+
+              <View style={styles.authSwitch}>
+                <Text style={styles.authSwitchText}>Ещё нет аккаунта?</Text>
+
+                <Pressable onPress={goToRegister}>
+                  <Text style={styles.authSwitchLink}>Создать</Text>
+                </Pressable>
+              </View>
             </>
           )}
 
@@ -523,6 +642,8 @@ export default function LoginScreen() {
                 />
               )}
 
+              {/* LIVE TIMER */}
+
               <Pressable
                 onPress={resendOtp}
                 disabled={retryAfter > 0 || loading}
@@ -537,6 +658,16 @@ export default function LoginScreen() {
                     ? `Отправить снова через ${retryAfter} сек.`
                     : "Отправить код повторно"}
                 </Text>
+              </Pressable>
+
+              {/* CHANGE PHONE */}
+
+              <Pressable
+                onPress={changePhone}
+                disabled={loading}
+                style={styles.changePhoneButton}
+              >
+                <Text style={styles.changePhoneText}>Изменить номер</Text>
               </Pressable>
             </>
           )}
