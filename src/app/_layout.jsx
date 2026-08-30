@@ -36,6 +36,27 @@ export default function RootLayout() {
           headerShown: false,
         }}
       />
+
+      <Stack.Screen
+        name="date"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="time"
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="guests"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }
