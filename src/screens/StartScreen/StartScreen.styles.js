@@ -24,7 +24,7 @@ export default StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: "#1d1b1b7e"
+    backgroundColor: "#1d1b1b7e",
   },
 
   sideOverlay: {
@@ -284,5 +284,11 @@ export default StyleSheet.create({
     ],
 
     opacity: 0.88,
+  },
+
+  skip: {
+    color: "#ffff",
+    textAlign: "center",
+    margin: "auto"
   },
 });

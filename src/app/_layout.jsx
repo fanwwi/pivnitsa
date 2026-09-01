@@ -57,6 +57,13 @@ export default function RootLayout() {
           headerShown: false,
         }}
       />
+
+      <Stack.Screen
+        name="table"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

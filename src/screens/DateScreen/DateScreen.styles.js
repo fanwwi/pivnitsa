@@ -20,7 +20,7 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: "#080706",
     paddingTop: 30,
-    paddingBottom: 30
+    paddingBottom: 40,
   },
 
   background: {
@@ -230,7 +230,7 @@ export default StyleSheet.create({
     marginBottom: 14,
 
     paddingHorizontal: 2,
-    marginTop: 20
+    marginTop: 20,
   },
 
   monthArrow: {
@@ -335,7 +335,7 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
 
-    marginTop: "-80",
+    marginTop: "-30",
     gap: 5,
   },
 
@@ -370,7 +370,7 @@ export default StyleSheet.create({
 
     paddingVertical: 8,
 
-    marginBottom: 4,
+    marginBottom: 30,
   },
 
   legendItem: {

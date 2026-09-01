@@ -215,6 +215,10 @@ export default function StartScreen() {
             <Text style={styles.secondaryText}>ЗАРЕГИСТРИРОВАТЬСЯ</Text>
           </View>
         </Pressable>
+
+        <Pressable onPress={() => router.push("/home")} style={styles.skip}>
+          <Text style={styles.secondaryText}>Пропустить</Text>
+        </Pressable>
       </Animated.View>
     </View>
   );

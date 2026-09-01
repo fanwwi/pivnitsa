@@ -393,7 +393,7 @@ export default function HomeScreen() {
 
   const openMapScreen = () => {
     router.push({
-      pathname: "/map",
+      pathname: "/table",
 
       params: {
         selected: selectedTable,
