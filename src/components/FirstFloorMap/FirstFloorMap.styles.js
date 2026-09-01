@@ -110,7 +110,6 @@ export default StyleSheet.create({
   },
 
   tableNumberBooked: {
-    backgroundColor: "#3D3D3D",
     borderColor: "#686868",
   },
 

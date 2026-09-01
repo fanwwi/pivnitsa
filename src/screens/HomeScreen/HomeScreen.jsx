@@ -9,6 +9,7 @@ import {
   Text,
   View,
 } from "react-native";
+
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "expo-image";
 import * as SecureStore from "expo-secure-store";
@@ -26,17 +27,19 @@ import {
 
 import styles from "./HomeScreen.styles";
 
+// ======================================================
+// CONSTANTS
+// ======================================================
+
 const { width } = Dimensions.get("window");
 
 const API_URL = "https://test--pivnitsa-backend--l8b8kf49s4rf.code.run";
 
 const TOKEN_KEY = "accessToken";
 
-/*
-|--------------------------------------------------------------------------
-| EVENTS
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// EVENTS
+// ======================================================
 
 const EVENTS = [
   {
@@ -65,22 +68,18 @@ const EVENTS = [
   },
 ];
 
-/*
-|--------------------------------------------------------------------------
-| DEFAULT BOOKING VALUES
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// DEFAULT BOOKING
+// ======================================================
 
 const DEFAULT_DATE = "2026-08-30";
 const DEFAULT_TIME = "19:00";
 const DEFAULT_GUESTS = "2 гостя";
 const DEFAULT_TABLE = "Столик №1";
 
-/*
-|--------------------------------------------------------------------------
-| DATE FORMAT
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// MONTHS
+// ======================================================
 
 const MONTH_NAMES = [
   "января",
@@ -97,13 +96,14 @@ const MONTH_NAMES = [
   "декабря",
 ];
 
-const formatBookingDate = (value) => {
-  if (!value) return "Выберите дату";
+// ======================================================
+// DATE FORMAT
+// ======================================================
 
-  /*
-   * Если вдруг старое состояние содержит
-   * "Сегодня", не ломаем интерфейс.
-   */
+const formatBookingDate = (value) => {
+  if (!value) {
+    return "Выберите дату";
+  }
 
   if (value === "Сегодня") {
     return "Сегодня";
@@ -126,84 +126,70 @@ const formatBookingDate = (value) => {
   return `${day} ${MONTH_NAMES[month - 1]} ${year}`;
 };
 
+// ======================================================
+// SCREEN
+// ======================================================
+
 export default function HomeScreen() {
-  /*
-  |--------------------------------------------------------------------------
-  | ROUTE PARAMS
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // ROUTE PARAMS
+  // ======================================================
 
   const params = useLocalSearchParams();
 
-  /*
-  |--------------------------------------------------------------------------
-  | USER
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // USER
+  // ======================================================
 
   const [user, setUser] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
-  /*
-  |--------------------------------------------------------------------------
-  | BOOKING STATE
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // BOOKING STATE
+  // ======================================================
 
-  const [selectedDate, setSelectedDate] = useState(params.date || DEFAULT_DATE);
+  const [selectedDate, setSelectedDate] = useState(
+    params.date ? String(params.date) : DEFAULT_DATE,
+  );
 
-  const [selectedTime, setSelectedTime] = useState(params.time || DEFAULT_TIME);
+  const [selectedTime, setSelectedTime] = useState(
+    params.time ? String(params.time) : DEFAULT_TIME,
+  );
 
   const [selectedGuests, setSelectedGuests] = useState(
-    params.guests || DEFAULT_GUESTS,
+    params.guests ? String(params.guests) : DEFAULT_GUESTS,
   );
 
   const [selectedTable, setSelectedTable] = useState(
-    params.table || DEFAULT_TABLE,
+    params.table ? String(params.table) : DEFAULT_TABLE,
   );
 
-  /*
-  |--------------------------------------------------------------------------
-  | SYNC PARAMETERS
-  |--------------------------------------------------------------------------
-  |
-  | Когда DateScreen делает:
-  |
-  | router.replace({
-  |   pathname: "/home",
-  |   params: {
-  |     date: "2026-09-12"
-  |   }
-  | })
-  |
-  | Home получает параметр и обновляет состояние.
-  |
-  */
+  // ======================================================
+  // SYNC ROUTE PARAMS
+  // ======================================================
 
   useEffect(() => {
-    if (params.date) {
+    if (params.date !== undefined) {
       setSelectedDate(String(params.date));
     }
 
-    if (params.time) {
+    if (params.time !== undefined) {
       setSelectedTime(String(params.time));
     }
 
-    if (params.guests) {
+    if (params.guests !== undefined) {
       setSelectedGuests(String(params.guests));
     }
 
-    if (params.table) {
+    if (params.table !== undefined) {
       setSelectedTable(String(params.table));
     }
   }, [params.date, params.time, params.guests, params.table]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | EVENT CAROUSEL
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // EVENT CAROUSEL
+  // ======================================================
 
   const [activeEvent, setActiveEvent] = useState(0);
 
@@ -211,11 +197,9 @@ export default function HomeScreen() {
 
   const CARD_WIDTH = width - 40;
 
-  /*
-  |--------------------------------------------------------------------------
-  | ANIMATIONS
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // ANIMATIONS
+  // ======================================================
 
   const headerOpacity = useRef(new Animated.Value(0)).current;
 
@@ -223,11 +207,9 @@ export default function HomeScreen() {
 
   const contentTranslate = useRef(new Animated.Value(25)).current;
 
-  /*
-  |--------------------------------------------------------------------------
-  | LOAD PROFILE
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // LOAD PROFILE
+  // ======================================================
 
   useEffect(() => {
     loadProfile();
@@ -297,11 +279,9 @@ export default function HomeScreen() {
     }
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | EVENT CAROUSEL
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // EVENT CAROUSEL
+  // ======================================================
 
   const goToEvent = (index) => {
     if (index < 0 || index >= EVENTS.length) {
@@ -326,11 +306,9 @@ export default function HomeScreen() {
     }
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | OPEN DATE
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // OPEN DATE
+  // ======================================================
 
   const openDateScreen = () => {
     router.push({
@@ -345,11 +323,9 @@ export default function HomeScreen() {
     });
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | OPEN TIME
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // OPEN TIME
+  // ======================================================
 
   const openTimeScreen = () => {
     router.push({
@@ -365,11 +341,9 @@ export default function HomeScreen() {
     });
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | OPEN GUESTS
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // OPEN GUESTS
+  // ======================================================
 
   const openGuestsScreen = () => {
     router.push({
@@ -385,18 +359,15 @@ export default function HomeScreen() {
     });
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | OPEN MAP
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // OPEN TABLE MAP
+  // ======================================================
 
   const openMapScreen = () => {
     router.push({
       pathname: "/table",
 
       params: {
-        selected: selectedTable,
         date: selectedDate,
         time: selectedTime,
         guests: selectedGuests,
@@ -405,11 +376,9 @@ export default function HomeScreen() {
     });
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | BOOKING
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // BOOKING
+  // ======================================================
 
   const handleBooking = () => {
     router.push({
@@ -424,11 +393,9 @@ export default function HomeScreen() {
     });
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | LOADING
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // LOADING
+  // ======================================================
 
   if (loading) {
     return (
@@ -450,33 +417,28 @@ export default function HomeScreen() {
     );
   }
 
-  /*
-  |--------------------------------------------------------------------------
-  | USER
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // USER
+  // ======================================================
 
   const firstName = user?.firstName || "";
-
   const lastName = user?.lastName || "";
 
-  /*
-  |--------------------------------------------------------------------------
-  | DISPLAY DATE
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // DATE
+  // ======================================================
 
   const displayedDate = formatBookingDate(selectedDate);
 
-  /*
-  |--------------------------------------------------------------------------
-  | RENDER
-  |--------------------------------------------------------------------------
-  */
+  // ======================================================
+  // RENDER
+  // ======================================================
 
   return (
     <View style={styles.container}>
-      {/* BACKGROUND */}
+      {/* ==================================================
+          BACKGROUND
+      ================================================== */}
 
       <Image
         source={require("../../assets/startImage.png")}
@@ -495,7 +457,9 @@ export default function HomeScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* HEADER */}
+        {/* ==================================================
+            HEADER
+        ================================================== */}
 
         <Animated.View
           style={[
@@ -543,13 +507,16 @@ export default function HomeScreen() {
           </Pressable>
         </Animated.View>
 
-        {/* HERO */}
+        {/* ==================================================
+            HERO
+        ================================================== */}
 
         <Animated.View
           style={[
             styles.hero,
             {
               opacity: contentOpacity,
+
               transform: [
                 {
                   translateY: contentTranslate,
@@ -576,13 +543,16 @@ export default function HomeScreen() {
           </Text>
         </Animated.View>
 
-        {/* EVENTS */}
+        {/* ==================================================
+            EVENTS
+        ================================================== */}
 
         <Animated.View
           style={[
             styles.eventsSection,
             {
               opacity: contentOpacity,
+
               transform: [
                 {
                   translateY: contentTranslate,
@@ -715,13 +685,16 @@ export default function HomeScreen() {
           </View>
         </Animated.View>
 
-        {/* BOOKING */}
+        {/* ==================================================
+            BOOKING
+        ================================================== */}
 
         <Animated.View
           style={[
             styles.bookingSection,
             {
               opacity: contentOpacity,
+
               transform: [
                 {
                   translateY: contentTranslate,
