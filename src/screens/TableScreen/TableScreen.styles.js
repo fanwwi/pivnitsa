@@ -8,8 +8,8 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#100D09",
-    paddingBottom: "40",
-    paddingTop: "20",
+    paddingBottom: 40,
+    paddingTop: 20,
   },
 
   // ======================================================
@@ -62,7 +62,7 @@ export default StyleSheet.create({
 
   floorSwitcher: {
     marginHorizontal: 20,
-    marginBottom: 8,
+    marginBottom: 4,
 
     height: 48,
 
@@ -121,6 +121,61 @@ export default StyleSheet.create({
     borderRadius: 2,
 
     backgroundColor: "#EAE3C0",
+  },
+
+  // ======================================================
+  // LEGEND
+  // ======================================================
+
+  legend: {
+    height: 25,
+
+    marginHorizontal: 20,
+    marginBottom: 4,
+
+    paddingHorizontal: 14,
+
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  legendItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  legendDot: {
+    width: 9,
+    height: 9,
+
+    marginRight: 6,
+
+    borderRadius: 5,
+
+    borderWidth: 1,
+  },
+
+  legendBooked: {
+    backgroundColor: "#FF5757",
+    borderColor: "#D86662",
+  },
+
+  legendAvailable: {
+    backgroundColor: "#B29259",
+    borderColor: "#D2B477",
+  },
+
+  legendSelected: {
+    backgroundColor: "#FF7A00",
+    borderColor: "#FF7A00",
+  },
+
+  legendText: {
+    color: "rgba(234, 227, 192, 0.62)",
+
+    fontSize: 9,
+    fontWeight: "600",
   },
 
   // ======================================================
@@ -188,11 +243,10 @@ export default StyleSheet.create({
 
   bookingPanel: {
     marginHorizontal: 12,
-    marginTop: 10,
-    marginBottom: 8,
 
     minHeight: 50,
 
+    marginBottom: 10,
     padding: 8,
 
     flexDirection: "row",
@@ -238,6 +292,12 @@ export default StyleSheet.create({
     justifyContent: "center",
 
     backgroundColor: "#B29259",
+  },
+
+  bookingTableNumber: {
+    color: "#211A10",
+    fontSize: 16,
+    fontWeight: "900",
   },
 
   bookingText: {
@@ -328,67 +388,5 @@ export default StyleSheet.create({
     fontWeight: "900",
 
     letterSpacing: 0.8,
-  },
-
-  // ======================================================
-  // LEGEND
-  // ======================================================
-
-  legend: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 116,
-
-    height: 40,
-
-    paddingHorizontal: 18,
-
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-
-    backgroundColor: "#100D09",
-  },
-
-  legendItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  legendDot: {
-    width: 10,
-    height: 10,
-
-    marginRight: 7,
-
-    borderRadius: 5,
-
-    borderWidth: 1,
-  },
-
-  // Красный — занят
-  legendBooked: {
-    backgroundColor: "#ff5757",
-    borderColor: "#D86662",
-  },
-
-  // Коричневый — свободен
-  legendAvailable: {
-    backgroundColor: "#b19258",
-    borderColor: "#B29259",
-  },
-
-  // Оранжевый — выбран
-  legendSelected: {
-    backgroundColor: "#ff7a00",
-    borderColor: "#ff7a00",
-  },
-
-  legendText: {
-    color: "rgba(234, 227, 192, 0.62)",
-
-    fontSize: 10,
-    fontWeight: "600",
   },
 });

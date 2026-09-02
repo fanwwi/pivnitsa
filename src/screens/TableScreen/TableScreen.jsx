@@ -1,67 +1,29 @@
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
+import { ChevronLeft, Layers3 } from "lucide-react-native";
 
 import FirstFloorMap from "../../components/FirstFloorMap/FirstFloorMap";
+import SecondFloorMap from "../../components/SecondFloorMap/SecondFloorMap";
+
 import styles from "./TableScreen.styles";
-
-// ======================================================
-// FLOORS
-// ======================================================
-
-const FLOORS = [
-  {
-    id: 1,
-    title: "1 этаж",
-  },
-  {
-    id: 2,
-    title: "2 этаж",
-  },
-];
-
-// ======================================================
-// SCREEN
-// ======================================================
 
 export default function TableScreen() {
   const params = useLocalSearchParams();
 
-  // ======================================================
-  // FLOOR
-  // ======================================================
+  const initialFloor = Number(params.floor) === 2 ? 2 : 1;
 
-  const [activeFloor, setActiveFloor] = useState(Number(params.floor) || 1);
-
-  // ======================================================
-  // SELECTED TABLE
-  // ======================================================
-
+  const [activeFloor, setActiveFloor] = useState(initialFloor);
   const [selectedTable, setSelectedTable] = useState(null);
-
-  // ======================================================
-  // TABLE SELECT
-  // ======================================================
 
   const handleTableSelect = (table) => {
     setSelectedTable(table);
-
-    console.log("SELECTED TABLE:", table);
   };
-
-  // ======================================================
-  // FLOOR CHANGE
-  // ======================================================
 
   const handleFloorChange = (floor) => {
     setActiveFloor(floor);
     setSelectedTable(null);
   };
-
-  // ======================================================
-  // BOOKING
-  // ======================================================
 
   const handleBooking = () => {
     if (!selectedTable) {
@@ -74,189 +36,154 @@ export default function TableScreen() {
       tableNumber: selectedTable.number,
       tableType: selectedTable.type,
       capacity: selectedTable.capacity,
-
       date: params.date ? String(params.date) : null,
       time: params.time ? String(params.time) : null,
       guests: params.guests ? String(params.guests) : null,
     };
 
-    console.log("BOOKING DATA:", bookingData);
-
-    // ====================================================
-    // RETURN TO HOME
-    // ====================================================
-
     router.replace({
       pathname: "/home",
-
       params: {
         date: bookingData.date || "",
         time: bookingData.time || "",
         guests: bookingData.guests || "",
-
         floor: String(bookingData.floor),
-
         tableId: String(bookingData.tableId),
-
         table: `Столик №${bookingData.tableNumber}`,
-
         tableNumber: String(bookingData.tableNumber),
-
         tableType: String(bookingData.tableType),
-
         capacity: String(bookingData.capacity),
       },
     });
   };
 
-  // ======================================================
-  // RENDER
-  // ======================================================
-
   return (
     <View style={styles.container}>
-      {/* ==================================================
-          HEADER
-      ================================================== */}
+      {/* HEADER */}
 
       <View style={styles.header}>
-        <View>
-          <Text style={styles.eyebrow}>БРОНИРОВАНИЕ</Text>
+        <Pressable
+          onPress={() => router.back()}
+          style={({ pressed }) => [
+            styles.backButton,
+            pressed && styles.backButtonPressed,
+          ]}
+        >
+          <ChevronLeft size={21} color="#EAE3C0" />
+        </Pressable>
 
+        <View style={styles.headerCenter}>
+          <Text style={styles.eyebrow}>ПИВНИЦА</Text>
           <Text style={styles.title}>Выберите столик</Text>
         </View>
 
         <View style={styles.headerIcon}>
-          <Ionicons name="restaurant-outline" size={20} color="#EAE3C0" />
+          <Layers3 size={19} color="#B29259" strokeWidth={1.7} />
         </View>
       </View>
 
-      {/* ==================================================
-          FLOOR SWITCHER
-      ================================================== */}
+      {/* FLOOR SWITCHER */}
 
       <View style={styles.floorSwitcher}>
-        {FLOORS.map((floor) => {
-          const active = activeFloor === floor.id;
+        <Pressable
+          onPress={() => handleFloorChange(1)}
+          style={({ pressed }) => [
+            styles.floorButton,
+            activeFloor === 1 && styles.floorButtonActive,
+            pressed && styles.floorButtonPressed,
+          ]}
+        >
+          <Text
+            style={[
+              styles.floorButtonText,
+              activeFloor === 1 && styles.floorButtonTextActive,
+            ]}
+          >
+            1 ЭТАЖ
+          </Text>
 
-          return (
-            <Pressable
-              key={floor.id}
-              onPress={() => handleFloorChange(floor.id)}
-              style={({ pressed }) => [
-                styles.floorButton,
-                active && styles.floorButtonActive,
-                pressed && styles.floorButtonPressed,
-              ]}
-            >
-              <Text
-                style={[
-                  styles.floorButtonText,
-                  active && styles.floorButtonTextActive,
-                ]}
-              >
-                {floor.title}
-              </Text>
+          {activeFloor === 1 && <View style={styles.floorIndicator} />}
+        </Pressable>
 
-              {active && <View style={styles.floorIndicator} />}
-            </Pressable>
-          );
-        })}
+        <Pressable
+          onPress={() => handleFloorChange(2)}
+          style={({ pressed }) => [
+            styles.floorButton,
+            activeFloor === 2 && styles.floorButtonActive,
+            pressed && styles.floorButtonPressed,
+          ]}
+        >
+          <Text
+            style={[
+              styles.floorButtonText,
+              activeFloor === 2 && styles.floorButtonTextActive,
+            ]}
+          >
+            2 ЭТАЖ
+          </Text>
+
+          {activeFloor === 2 && <View style={styles.floorIndicator} />}
+        </Pressable>
       </View>
 
-      {/* ==================================================
-          MAP
-      ================================================== */}
+      {/* LEGEND */}
+
+      <View style={styles.legend}>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendDot, styles.legendAvailable]} />
+          <Text style={styles.legendText}>Свободен</Text>
+        </View>
+
+        <View style={styles.legendItem}>
+          <View style={[styles.legendDot, styles.legendSelected]} />
+          <Text style={styles.legendText}>Выбран</Text>
+        </View>
+
+        <View style={styles.legendItem}>
+          <View style={[styles.legendDot, styles.legendBooked]} />
+          <Text style={styles.legendText}>Занят</Text>
+        </View>
+      </View>
+
+      {/* MAP */}
 
       <View style={styles.mapContainer}>
         {activeFloor === 1 ? (
           <FirstFloorMap onTableSelect={handleTableSelect} />
         ) : (
-          <View style={styles.secondFloor}>
-            <View style={styles.secondFloorIcon}>
-              <Ionicons name="layers-outline" size={34} color="#B29259" />
-            </View>
-
-            <Text style={styles.secondFloorTitle}>2 этаж</Text>
-
-            <Text style={styles.secondFloorSubtitle}>
-              Планировка второго этажа
-              {"\n"}
-              скоро будет доступна
-            </Text>
-          </View>
+          <SecondFloorMap onTableSelect={handleTableSelect} />
         )}
       </View>
 
-      {/* ==================================================
-          LEGEND
-      ================================================== */}
+      {/* SELECTED TABLE */}
 
-      <View style={styles.legend}>
-        <View style={styles.legendItem}>
-          <View style={[styles.legendDot, styles.legendBooked]} />
-
-          <Text style={styles.legendText}>Занято</Text>
-        </View>
-
-        <View style={styles.legendItem}>
-          <View style={[styles.legendDot, styles.legendAvailable]} />
-
-          <Text style={styles.legendText}>Свободно</Text>
-        </View>
-
-        <View style={styles.legendItem}>
-          <View style={[styles.legendDot, styles.legendSelected]} />
-
-          <Text style={styles.legendText}>Ваш столик</Text>
-        </View>
-      </View>
-
-      {/* ==================================================
-          SELECTED TABLE
-      ================================================== */}
-
-      {selectedTable && activeFloor === 1 && (
+      {selectedTable && (
         <View style={styles.bookingPanel}>
-          {/* TABLE INFO */}
-
           <View style={styles.bookingInfo}>
             <View style={styles.bookingTableIcon}>
-              <Ionicons name="restaurant" size={19} color="#211A10" />
+              <Text style={styles.bookingTableNumber}>
+                {selectedTable.number}
+              </Text>
             </View>
 
             <View style={styles.bookingText}>
-              <Text style={styles.bookingLabel}>ВАШ ВЫБОР</Text>
+              <Text style={styles.bookingLabel}>ВЫБРАННЫЙ СТОЛИК</Text>
 
-              <Text style={styles.bookingTitle}>
-                Стол №{selectedTable.number}
+              <Text style={styles.bookingTitle} numberOfLines={1}>
+                Столик №{selectedTable.number}
               </Text>
 
               <View style={styles.bookingMeta}>
-                <Text style={styles.bookingType}>
-                  {selectedTable.type === "vip"
-                    ? "VIP"
-                    : selectedTable.type === "big"
-                      ? "BIG"
-                      : "STANDARD"}
-                </Text>
+                <Text style={styles.bookingType}>{selectedTable.type}</Text>
 
                 <View style={styles.bookingDot} />
 
-                <Ionicons
-                  name="people-outline"
-                  size={12}
-                  color="rgba(234,227,192,0.65)"
-                />
-
                 <Text style={styles.bookingCapacity}>
-                  {selectedTable.capacity} мест
+                  до {selectedTable.capacity} гостей
                 </Text>
               </View>
             </View>
           </View>
-
-          {/* BOOK BUTTON */}
 
           <Pressable
             onPress={handleBooking}
@@ -265,9 +192,7 @@ export default function TableScreen() {
               pressed && styles.bookButtonPressed,
             ]}
           >
-            <Text style={styles.bookButtonText}>ЗАБРОНИРОВАТЬ</Text>
-
-            <Ionicons name="arrow-forward" size={17} color="#211A10" />
+            <Text style={styles.bookButtonText}>ВЫБРАТЬ</Text>
           </Pressable>
         </View>
       )}
