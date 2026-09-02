@@ -125,7 +125,6 @@ const getMonthIndex = (dateString) => {
   }
 
   const start = new Date(2026, 7, 1);
-
   const current = new Date(parsed.year, parsed.month, 1);
 
   const index =
@@ -143,6 +142,12 @@ const getMonthIndex = (dateString) => {
 
 export default function DateScreen() {
   const params = useLocalSearchParams();
+
+  /*
+  |--------------------------------------------------------------------------
+  | INITIAL DATE
+  |--------------------------------------------------------------------------
+  */
 
   const initialDate =
     typeof params.date === "string"
@@ -229,6 +234,50 @@ export default function DateScreen() {
 
   /*
   |--------------------------------------------------------------------------
+  | PRESERVE BOOKING PARAMS
+  |--------------------------------------------------------------------------
+  */
+
+  const getBookingParams = () => {
+    return {
+      date: selectedDate,
+
+      ...(params.time && {
+        time: String(params.time),
+      }),
+
+      ...(params.guests && {
+        guests: String(params.guests),
+      }),
+
+      ...(params.table && {
+        table: String(params.table),
+      }),
+
+      ...(params.tableId && {
+        tableId: String(params.tableId),
+      }),
+
+      ...(params.tableNumber && {
+        tableNumber: String(params.tableNumber),
+      }),
+
+      ...(params.tableType && {
+        tableType: String(params.tableType),
+      }),
+
+      ...(params.capacity && {
+        capacity: String(params.capacity),
+      }),
+
+      ...(params.floor && {
+        floor: String(params.floor),
+      }),
+    };
+  };
+
+  /*
+  |--------------------------------------------------------------------------
   | CONFIRM
   |--------------------------------------------------------------------------
   */
@@ -238,29 +287,37 @@ export default function DateScreen() {
       return;
     }
 
+    const bookingParams = getBookingParams();
+
+    /*
+    |--------------------------------------------------------------------------
+    | ОТКРЫТО ИЗ BOOKING SCREEN
+    |--------------------------------------------------------------------------
+    */
+
+    if (params.source === "booking") {
+      router.replace({
+        pathname: "/booking",
+        params: {
+          ...bookingParams,
+          source: "home",
+        },
+      });
+
+      return;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ОТКРЫТО ИЗ BOOKING SECTION НА HOME
+    |--------------------------------------------------------------------------
+    */
+
     router.replace({
       pathname: "/home",
-
       params: {
-        date: selectedDate,
-
-        ...(params.time
-          ? {
-              time: String(params.time),
-            }
-          : {}),
-
-        ...(params.guests
-          ? {
-              guests: String(params.guests),
-            }
-          : {}),
-
-        ...(params.table
-          ? {
-              table: String(params.table),
-            }
-          : {}),
+        ...bookingParams,
+        focusBooking: "1",
       },
     });
   };
@@ -296,6 +353,12 @@ export default function DateScreen() {
   }, [selectedDate]);
 
   const currentMonth = months[activeMonth];
+
+  /*
+  |--------------------------------------------------------------------------
+  | RENDER
+  |--------------------------------------------------------------------------
+  */
 
   return (
     <View style={styles.container}>
@@ -370,7 +433,9 @@ export default function DateScreen() {
               disabled={activeMonth === 0}
               style={({ pressed }) => [
                 styles.monthArrow,
+
                 activeMonth === 0 && styles.monthArrowDisabled,
+
                 pressed && activeMonth !== 0 && styles.pressed,
               ]}
             >
@@ -399,7 +464,9 @@ export default function DateScreen() {
               disabled={activeMonth === 11}
               style={({ pressed }) => [
                 styles.monthArrow,
+
                 activeMonth === 11 && styles.monthArrowDisabled,
+
                 pressed && activeMonth !== 11 && styles.pressed,
               ]}
             >
@@ -432,17 +499,21 @@ export default function DateScreen() {
               markedDates={markedDates}
               theme={{
                 backgroundColor: "transparent",
+
                 calendarBackground: "transparent",
 
                 textSectionTitleColor: "#77736B",
+
                 textSectionTitleDisabledColor: "#45413B",
 
                 selectedDayBackgroundColor: "#D2B477",
+
                 selectedDayTextColor: "#211A10",
 
                 todayTextColor: "#D2B477",
 
                 dayTextColor: "#E6DFCB",
+
                 textDisabledColor: "#5D5953",
 
                 arrowColor: "#EAE3C0",
@@ -473,6 +544,7 @@ export default function DateScreen() {
                 onPress={() => goToMonth(index)}
                 style={[
                   styles.monthDot,
+
                   index === activeMonth && styles.monthDotActive,
                 ]}
               />
@@ -516,13 +588,20 @@ export default function DateScreen() {
                   ? ["#D2B477", "#B29259", "#96723F"]
                   : ["#45413B", "#35322E"]
               }
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              start={{
+                x: 0,
+                y: 0,
+              }}
+              end={{
+                x: 1,
+                y: 1,
+              }}
               style={styles.confirmGradient}
             >
               <Text
                 style={[
                   styles.confirmText,
+
                   !selectedDate && styles.confirmTextDisabled,
                 ]}
               >

@@ -14,6 +14,7 @@ export default function TableScreen() {
   const initialFloor = Number(params.floor) === 2 ? 2 : 1;
 
   const [activeFloor, setActiveFloor] = useState(initialFloor);
+
   const [selectedTable, setSelectedTable] = useState(null);
 
   const handleTableSelect = (table) => {
@@ -25,55 +26,105 @@ export default function TableScreen() {
     setSelectedTable(null);
   };
 
+  const handleBack = () => {
+    router.back();
+  };
+
   const handleBooking = () => {
     if (!selectedTable) {
       return;
     }
 
-    const bookingData = {
-      floor: activeFloor,
-      tableId: selectedTable.id,
-      tableNumber: selectedTable.number,
-      tableType: selectedTable.type,
-      capacity: selectedTable.capacity,
-      date: params.date ? String(params.date) : null,
-      time: params.time ? String(params.time) : null,
-      guests: params.guests ? String(params.guests) : null,
+    const bookingParams = {
+      date: params.date ? String(params.date) : "",
+
+      time: params.time ? String(params.time) : "",
+
+      guests: params.guests ? String(params.guests) : "",
+
+      floor: String(activeFloor),
+
+      tableId: String(selectedTable.id),
+
+      table: `Столик №${selectedTable.number}`,
+
+      tableNumber: String(selectedTable.number),
+
+      tableType: String(selectedTable.type),
+
+      capacity: String(selectedTable.capacity),
     };
 
+    /*
+     * ==============================
+     * ОТКРЫТО ИЗ BOOKING SCREEN
+     * ==============================
+     *
+     * Возвращаемся именно на предыдущий
+     * BookingScreen.
+     *
+     * Важно: BookingScreen уже содержит
+     * старые params, поэтому при простом
+     * router.back() новые данные столика
+     * сами туда не попадут.
+     *
+     * Поэтому здесь заменяем текущий
+     * TableScreen на BookingScreen с
+     * обновлёнными параметрами.
+     */
+    if (params.source === "booking") {
+      router.replace({
+        pathname: "/booking",
+        params: {
+          ...bookingParams,
+          source: "home",
+        },
+      });
+
+      return;
+    }
+
+    /*
+     * ==============================
+     * ОТКРЫТО ИЗ HOME / BOOKING SECTION
+     * ==============================
+     *
+     * Возвращаем пользователя на Home
+     * и передаём focusBooking.
+     *
+     * HomeScreen увидит focusBooking=1
+     * и автоматически прокрутит ScrollView
+     * к BookingSection.
+     */
     router.replace({
       pathname: "/home",
       params: {
-        date: bookingData.date || "",
-        time: bookingData.time || "",
-        guests: bookingData.guests || "",
-        floor: String(bookingData.floor),
-        tableId: String(bookingData.tableId),
-        table: `Столик №${bookingData.tableNumber}`,
-        tableNumber: String(bookingData.tableNumber),
-        tableType: String(bookingData.tableType),
-        capacity: String(bookingData.capacity),
+        ...bookingParams,
+        focusBooking: "1",
       },
     });
   };
 
   return (
     <View style={styles.container}>
-      {/* HEADER */}
+      {/* =========================
+          HEADER
+      ========================= */}
 
       <View style={styles.header}>
         <Pressable
-          onPress={() => router.back()}
+          onPress={handleBack}
           style={({ pressed }) => [
             styles.backButton,
             pressed && styles.backButtonPressed,
           ]}
         >
-          <ChevronLeft size={21} color="#EAE3C0" />
+          <ChevronLeft size={21} color="#EAE3C0" strokeWidth={1.8} />
         </Pressable>
 
         <View style={styles.headerCenter}>
           <Text style={styles.eyebrow}>ПИВНИЦА</Text>
+
           <Text style={styles.title}>Выберите столик</Text>
         </View>
 
@@ -82,7 +133,9 @@ export default function TableScreen() {
         </View>
       </View>
 
-      {/* FLOOR SWITCHER */}
+      {/* =========================
+          FLOOR SWITCHER
+      ========================= */}
 
       <View style={styles.floorSwitcher}>
         <Pressable
@@ -126,26 +179,33 @@ export default function TableScreen() {
         </Pressable>
       </View>
 
-      {/* LEGEND */}
+      {/* =========================
+          LEGEND
+      ========================= */}
 
       <View style={styles.legend}>
         <View style={styles.legendItem}>
           <View style={[styles.legendDot, styles.legendAvailable]} />
+
           <Text style={styles.legendText}>Свободен</Text>
         </View>
 
         <View style={styles.legendItem}>
           <View style={[styles.legendDot, styles.legendSelected]} />
+
           <Text style={styles.legendText}>Выбран</Text>
         </View>
 
         <View style={styles.legendItem}>
           <View style={[styles.legendDot, styles.legendBooked]} />
+
           <Text style={styles.legendText}>Занят</Text>
         </View>
       </View>
 
-      {/* MAP */}
+      {/* =========================
+          MAP
+      ========================= */}
 
       <View style={styles.mapContainer}>
         {activeFloor === 1 ? (
@@ -155,7 +215,9 @@ export default function TableScreen() {
         )}
       </View>
 
-      {/* SELECTED TABLE */}
+      {/* =========================
+          SELECTED TABLE
+      ========================= */}
 
       {selectedTable && (
         <View style={styles.bookingPanel}>

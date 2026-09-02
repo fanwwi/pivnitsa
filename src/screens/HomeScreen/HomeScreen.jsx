@@ -5,7 +5,6 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { useLocalSearchParams } from "expo-router";
 
-
 import HomeHeader from "./components/HomeHeader/HomeHeader";
 import HomeHero from "./components/HomeHero/HomeHero";
 import EventsBanner from "./components/EventsBanner/EventsBanner";
@@ -14,11 +13,12 @@ import BookingSection from "./components/BookingSection/BookingSection";
 import styles from "./HomeScreen.styles";
 import useEvents from "../../hooks/UseEvents";
 import useHomeProfile from "../../hooks/useHomeProfile";
+import Navbar from "../../components/Navbar/Navbar";
 
-const DEFAULT_DATE = "2026-08-30";
-const DEFAULT_TIME = "19:00";
-const DEFAULT_GUESTS = "2 гостя";
-const DEFAULT_TABLE = "Столик №1";
+const DEFAULT_DATE = "Дата";
+const DEFAULT_TIME = "Время";
+const DEFAULT_GUESTS = "Гости";
+const DEFAULT_TABLE = "Столик";
 
 const MONTH_NAMES = [
   "января",
@@ -143,6 +143,9 @@ export default function HomeScreen() {
 
         <View style={styles.bottomSpace} />
       </ScrollView>
+
+      {/* Нижняя навигация */}
+      <Navbar />
     </View>
   );
 }

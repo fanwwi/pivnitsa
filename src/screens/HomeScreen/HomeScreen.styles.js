@@ -29,6 +29,7 @@ export default StyleSheet.create({
   scrollContent: {
     paddingTop: 58,
     paddingHorizontal: 20,
+    paddingBottom: 10,
   },
 
   loadingScreen: {
@@ -53,6 +54,6 @@ export default StyleSheet.create({
   },
 
   bottomSpace: {
-    height: 45,
+    height: 30,
   },
 });

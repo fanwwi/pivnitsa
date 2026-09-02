@@ -1,6 +1,5 @@
 import { Pressable, Text, View } from "react-native";
 import { router } from "expo-router";
-
 import {
   CalendarDays,
   ChevronRight,
@@ -8,7 +7,6 @@ import {
   Users,
   UtensilsCrossed,
 } from "lucide-react-native";
-
 import { LinearGradient } from "expo-linear-gradient";
 
 import styles from "./BookingSection.styles";
@@ -22,15 +20,18 @@ export default function BookingSection({
   opacity,
   translateY,
 }) {
+  const bookingParams = {
+    date: selectedDate,
+    time: selectedTime,
+    guests: selectedGuests,
+    table: selectedTable,
+    source: "home",
+  };
+
   const openDateScreen = () => {
     router.push({
       pathname: "/date",
-      params: {
-        date: selectedDate,
-        time: selectedTime,
-        guests: selectedGuests,
-        table: selectedTable,
-      },
+      params: bookingParams,
     });
   };
 
@@ -38,11 +39,8 @@ export default function BookingSection({
     router.push({
       pathname: "/time",
       params: {
+        ...bookingParams,
         selected: selectedTime,
-        date: selectedDate,
-        time: selectedTime,
-        guests: selectedGuests,
-        table: selectedTable,
       },
     });
   };
@@ -51,11 +49,8 @@ export default function BookingSection({
     router.push({
       pathname: "/guests",
       params: {
+        ...bookingParams,
         selected: selectedGuests,
-        date: selectedDate,
-        time: selectedTime,
-        guests: selectedGuests,
-        table: selectedTable,
       },
     });
   };
@@ -63,12 +58,7 @@ export default function BookingSection({
   const openTableScreen = () => {
     router.push({
       pathname: "/table",
-      params: {
-        date: selectedDate,
-        time: selectedTime,
-        guests: selectedGuests,
-        table: selectedTable,
-      },
+      params: bookingParams,
     });
   };
 
@@ -76,10 +66,8 @@ export default function BookingSection({
     router.push({
       pathname: "/booking",
       params: {
-        date: selectedDate,
-        time: selectedTime,
-        guests: selectedGuests,
-        table: selectedTable,
+        ...bookingParams,
+        source: "home",
       },
     });
   };
@@ -153,8 +141,14 @@ export default function BookingSection({
       >
         <LinearGradient
           colors={["#D2B477", "#B29259", "#96723F"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+          start={{
+            x: 0,
+            y: 0,
+          }}
+          end={{
+            x: 1,
+            y: 1,
+          }}
           style={styles.bookGradient}
         >
           <Text style={styles.bookText}>ЗАБРОНИРОВАТЬ</Text>
@@ -172,7 +166,7 @@ function BookingOption({ label, value, icon, onPress }) {
       onPress={onPress}
       style={({ pressed }) => [
         styles.bookingOption,
-        pressed && styles.optionPressed,
+        pressed && styles.bookingOptionPressed,
       ]}
     >
       <View style={styles.optionIcon}>{icon}</View>
@@ -184,8 +178,6 @@ function BookingOption({ label, value, icon, onPress }) {
           {value}
         </Text>
       </View>
-
-      <ChevronRight size={16} color="#77736B" />
     </Pressable>
   );
 }

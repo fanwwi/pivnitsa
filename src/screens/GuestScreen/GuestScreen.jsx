@@ -27,83 +27,158 @@ const getGuestsLabel = (count) => {
 export default function GuestsScreen() {
   const params = useLocalSearchParams();
 
+  /*
+  |--------------------------------------------------------------------------
+  | INITIAL GUESTS
+  |--------------------------------------------------------------------------
+  */
+
   const initialGuests =
     typeof params.guests === "string"
       ? Math.min(
           MAX_GUESTS,
           Math.max(MIN_GUESTS, Number(params.guests) || MIN_GUESTS),
         )
-      : MIN_GUESTS;
+      : typeof params.selected === "string"
+        ? Math.min(
+            MAX_GUESTS,
+            Math.max(MIN_GUESTS, Number(params.selected) || MIN_GUESTS),
+          )
+        : MIN_GUESTS;
 
   const [guests, setGuests] = useState(initialGuests);
 
   /*
-   * Текст под количеством гостей
-   */
+  |--------------------------------------------------------------------------
+  | GUEST LABEL
+  |--------------------------------------------------------------------------
+  */
 
   const guestsLabel = useMemo(() => {
     return getGuestsLabel(guests);
   }, [guests]);
 
   /*
-   * Увеличить количество
-   */
+  |--------------------------------------------------------------------------
+  | INCREASE
+  |--------------------------------------------------------------------------
+  */
 
   const increaseGuests = () => {
     setGuests((current) => Math.min(current + 1, MAX_GUESTS));
   };
 
   /*
-   * Уменьшить количество
-   */
+  |--------------------------------------------------------------------------
+  | DECREASE
+  |--------------------------------------------------------------------------
+  */
 
   const decreaseGuests = () => {
     setGuests((current) => Math.max(current - 1, MIN_GUESTS));
   };
 
   /*
-   * Выбрать конкретное количество
-   */
+  |--------------------------------------------------------------------------
+  | PRESET
+  |--------------------------------------------------------------------------
+  */
 
   const selectPreset = (value) => {
     setGuests(value);
   };
 
   /*
-   * Подтвердить
-   */
+  |--------------------------------------------------------------------------
+  | PRESERVE BOOKING DATA
+  |--------------------------------------------------------------------------
+  */
+
+  const getBookingParams = () => {
+    return {
+      guests: String(guests),
+
+      ...(params.date && {
+        date: String(params.date),
+      }),
+
+      ...(params.time && {
+        time: String(params.time),
+      }),
+
+      ...(params.table && {
+        table: String(params.table),
+      }),
+
+      ...(params.tableId && {
+        tableId: String(params.tableId),
+      }),
+
+      ...(params.tableNumber && {
+        tableNumber: String(params.tableNumber),
+      }),
+
+      ...(params.tableType && {
+        tableType: String(params.tableType),
+      }),
+
+      ...(params.capacity && {
+        capacity: String(params.capacity),
+      }),
+
+      ...(params.floor && {
+        floor: String(params.floor),
+      }),
+    };
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | CONFIRM
+  |--------------------------------------------------------------------------
+  */
 
   const handleConfirm = () => {
+    const bookingParams = getBookingParams();
+
+    /*
+    |--------------------------------------------------------------------------
+    | OPENED FROM BOOKING SCREEN
+    |--------------------------------------------------------------------------
+    */
+
+    if (params.source === "booking") {
+      router.replace({
+        pathname: "/booking",
+        params: {
+          ...bookingParams,
+          source: "home",
+        },
+      });
+
+      return;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | OPENED FROM HOME
+    |--------------------------------------------------------------------------
+    */
+
     router.replace({
       pathname: "/home",
-
       params: {
-        guests: String(guests),
-
-        ...(params.date
-          ? {
-              date: String(params.date),
-            }
-          : {}),
-
-        ...(params.time
-          ? {
-              time: String(params.time),
-            }
-          : {}),
-
-        ...(params.table
-          ? {
-              table: String(params.table),
-            }
-          : {}),
+        ...bookingParams,
+        focusBooking: "1",
       },
     });
   };
 
   /*
-   * Назад
-   */
+  |--------------------------------------------------------------------------
+  | BACK
+  |--------------------------------------------------------------------------
+  */
 
   const handleBack = () => {
     router.back();
@@ -185,7 +260,9 @@ export default function GuestsScreen() {
                 disabled={guests === MIN_GUESTS}
                 style={({ pressed }) => [
                   styles.counterButton,
+
                   guests === MIN_GUESTS && styles.counterButtonDisabled,
+
                   pressed &&
                     guests !== MIN_GUESTS &&
                     styles.counterButtonPressed,
@@ -213,7 +290,9 @@ export default function GuestsScreen() {
                 disabled={guests === MAX_GUESTS}
                 style={({ pressed }) => [
                   styles.counterButton,
+
                   guests === MAX_GUESTS && styles.counterButtonDisabled,
+
                   pressed &&
                     guests !== MAX_GUESTS &&
                     styles.counterButtonPressed,
@@ -230,8 +309,11 @@ export default function GuestsScreen() {
             {/* RANGE */}
 
             <View style={styles.range}>
-              {Array.from({ length: MAX_GUESTS }).map((_, index) => {
+              {Array.from({
+                length: MAX_GUESTS,
+              }).map((_, index) => {
                 const value = index + 1;
+
                 const active = value <= guests;
 
                 return (
@@ -270,7 +352,9 @@ export default function GuestsScreen() {
                     onPress={() => selectPreset(value)}
                     style={({ pressed }) => [
                       styles.preset,
+
                       active && styles.presetActive,
+
                       pressed && styles.presetPressed,
                     ]}
                   >
@@ -283,6 +367,7 @@ export default function GuestsScreen() {
                     <Text
                       style={[
                         styles.presetNumber,
+
                         active && styles.presetNumberActive,
                       ]}
                     >

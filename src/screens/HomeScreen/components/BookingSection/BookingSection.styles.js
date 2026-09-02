@@ -2,7 +2,6 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   bookingSection: {
-    marginTop: 32,
 
     padding: 20,
 
