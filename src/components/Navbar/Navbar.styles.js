@@ -8,7 +8,7 @@ export default StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 8,
 
-    marginBottom: 10,
+    backgroundColor: "#0C0A07",
   },
 
   navbar: {
@@ -30,19 +30,14 @@ export default StyleSheet.create({
   },
 
   itemPressed: {
-    opacity: 0.65,
+    opacity: 0.6,
   },
 
   iconWrapper: {
-    borderRadius: 12,
     width: 38,
     height: 32,
 
     alignItems: "center",
     justifyContent: "center",
-  },
-
-  iconWrapperActive: {
-    backgroundColor: "#B29259",
   },
 });

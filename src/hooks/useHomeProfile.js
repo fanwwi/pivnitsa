@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
-import { router } from "expo-router";
 
 const API_URL = "https://test--pivnitsa-backend--l8b8kf49s4rf.code.run";
 
@@ -19,8 +18,16 @@ export default function useHomeProfile() {
 
         const accessToken = await SecureStore.getItemAsync(TOKEN_KEY);
 
+        /*
+         * Гость:
+         * токена нет → профиль не нужен → остаёмся на Home.
+         */
         if (!accessToken) {
-          router.replace("/login");
+          if (mounted) {
+            setUser(null);
+            setLoading(false);
+          }
+
           return;
         }
 
@@ -33,10 +40,17 @@ export default function useHomeProfile() {
 
         const data = await response.json().catch(() => ({}));
 
+        /*
+         * Токен протух или недействителен.
+         */
         if (response.status === 401 || response.status === 403) {
           await SecureStore.deleteItemAsync(TOKEN_KEY);
 
-          router.replace("/login");
+          if (mounted) {
+            setUser(null);
+            setLoading(false);
+          }
+
           return;
         }
 
@@ -50,8 +64,14 @@ export default function useHomeProfile() {
       } catch (error) {
         console.error("HOME PROFILE ERROR:", error);
 
+        /*
+         * Ошибка загрузки профиля не должна
+         * выкидывать пользователя с Home.
+         *
+         * Home доступен гостям.
+         */
         if (mounted) {
-          router.replace("/login");
+          setUser(null);
         }
       } finally {
         if (mounted) {

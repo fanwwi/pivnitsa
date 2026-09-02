@@ -1,5 +1,14 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
+
 import { router, useLocalSearchParams } from "expo-router";
+import { useEffect } from "react";
+
 import {
   CalendarDays,
   Check,
@@ -8,17 +17,64 @@ import {
   Users,
   UtensilsCrossed,
 } from "lucide-react-native";
+
 import { LinearGradient } from "expo-linear-gradient";
 
 import styles from "./BookingScreen.styles";
 import Navbar from "../../components/Navbar/Navbar";
+import useAuthStatus from "../../hooks/useAuthStatus";
 
 export default function BookingScreen() {
   const params = useLocalSearchParams();
 
+  const { isAuthenticated, loading: authLoading } = useAuthStatus();
+
+  /*
+   * Защита страницы бронирования.
+   *
+   * Если пользователь не авторизован —
+   * отправляем его на специальную страницу.
+   */
+  useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+
+    if (!isAuthenticated) {
+      router.replace("/auth");
+    }
+  }, [authLoading, isAuthenticated]);
+
+  /*
+   * Пока проверяем авторизацию,
+   * ничего из Booking не показываем.
+   */
+  if (authLoading) {
+    return (
+      <View style={styles.loadingScreen}>
+        <ActivityIndicator size="small" color="#B29259" />
+      </View>
+    );
+  }
+
+  /*
+   * На короткий момент после проверки
+   * не показываем защищённый контент гостю.
+   */
+  if (!isAuthenticated) {
+    return (
+      <View style={styles.loadingScreen}>
+        <ActivityIndicator size="small" color="#B29259" />
+      </View>
+    );
+  }
+
   const date = params.date ? String(params.date) : "Не выбрана";
+
   const time = params.time ? String(params.time) : "Не выбрано";
+
   const guests = params.guests ? String(params.guests) : "Не выбрано";
+
   const table = params.table ? String(params.table) : "Не выбран";
 
   const tableNumber = params.tableNumber ? String(params.tableNumber) : null;
@@ -113,6 +169,7 @@ export default function BookingScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* HEADER */}
+
         <View style={styles.header}>
           <Pressable
             onPress={handleBack}
@@ -136,6 +193,7 @@ export default function BookingScreen() {
         </View>
 
         {/* INTRO */}
+
         <View style={styles.intro}>
           <View style={styles.introIcon}>
             <UtensilsCrossed size={22} color="#B29259" strokeWidth={1.6} />
@@ -154,6 +212,7 @@ export default function BookingScreen() {
         </View>
 
         {/* DETAILS */}
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>ДЕТАЛИ БРОНИРОВАНИЯ</Text>
 
@@ -199,6 +258,7 @@ export default function BookingScreen() {
         </View>
 
         {/* SELECTED TABLE */}
+
         {tableNumber && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>ВЫБРАННЫЙ СТОЛИК</Text>
@@ -233,40 +293,8 @@ export default function BookingScreen() {
           </View>
         )}
 
-        {/* SUMMARY */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>ИТОГО</Text>
-
-          <View style={styles.summaryCard}>
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Дата</Text>
-
-              <Text style={styles.summaryValue}>{date}</Text>
-            </View>
-
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Время</Text>
-
-              <Text style={styles.summaryValue}>{time}</Text>
-            </View>
-
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Гости</Text>
-
-              <Text style={styles.summaryValue}>{guests}</Text>
-            </View>
-
-            <View style={[styles.summaryRow, styles.summaryRowLast]}>
-              <Text style={styles.summaryLabel}>Столик</Text>
-
-              <Text style={styles.summaryValue} numberOfLines={1}>
-                {table}
-              </Text>
-            </View>
-          </View>
-        </View>
-
         {/* CONFIRM */}
+
         <Pressable
           onPress={confirmBooking}
           disabled={!hasCompleteBooking}
@@ -316,7 +344,7 @@ export default function BookingScreen() {
         <View style={styles.bottomSpacing} />
       </ScrollView>
 
-      <Navbar />
+      <Navbar isAuthenticated={isAuthenticated} />
     </View>
   );
 }

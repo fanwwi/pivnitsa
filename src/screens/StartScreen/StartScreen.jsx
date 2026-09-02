@@ -3,8 +3,11 @@ import { Animated, Image, Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 
 import styles from "./StartScreen.styles";
+
+const TOKEN_KEY = "accessToken";
 
 export default function StartScreen() {
   const contentOpacity = useRef(new Animated.Value(0)).current;
@@ -16,6 +19,25 @@ export default function StartScreen() {
   const glowScale = useRef(new Animated.Value(0.85)).current;
 
   useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = await SecureStore.getItemAsync(TOKEN_KEY);
+
+        if (token) {
+          router.replace("/home");
+          return;
+        }
+      } catch (error) {
+        console.error("START AUTH CHECK ERROR:", error);
+      }
+
+      startAnimations();
+    };
+
+    checkAuth();
+  }, []);
+
+  const startAnimations = () => {
     Animated.parallel([
       Animated.timing(contentOpacity, {
         toValue: 1,
@@ -76,7 +98,7 @@ export default function StartScreen() {
         ]),
       ),
     ]).start();
-  }, []);
+  };
 
   return (
     <View style={styles.container}>
@@ -137,9 +159,7 @@ export default function StartScreen() {
         ]}
       >
         <View style={styles.decorationLine} />
-
         <View style={styles.decorationDiamond} />
-
         <View style={styles.decorationLine} />
       </Animated.View>
 
@@ -216,7 +236,9 @@ export default function StartScreen() {
           </View>
         </Pressable>
 
-        <Pressable onPress={() => router.push("/home")} style={styles.skip}>
+        {/* SKIP */}
+
+        <Pressable onPress={() => router.replace("/home")} style={styles.skip}>
           <Text style={styles.secondaryText}>Пропустить</Text>
         </Pressable>
       </Animated.View>

@@ -4,9 +4,31 @@ import { Bell } from "lucide-react-native";
 
 import styles from "./HomeHeader.styles";
 
-export default function HomeHeader({ user, opacity }) {
+export default function HomeHeader({ user, opacity, isAuthenticated }) {
   const firstName = user?.firstName || "";
   const lastName = user?.lastName || "";
+
+  const userName = isAuthenticated
+    ? `${firstName} ${lastName}`.trim() || "Пользователь"
+    : "Гость";
+
+  const handleProfilePress = () => {
+    if (isAuthenticated) {
+      router.push("/profile");
+      return;
+    }
+
+    router.push("/auth");
+  };
+
+  const handleNotificationsPress = () => {
+    if (isAuthenticated) {
+      router.push("/notifications");
+      return;
+    }
+
+    router.push("/auth");
+  };
 
   return (
     <Animated.View
@@ -18,7 +40,7 @@ export default function HomeHeader({ user, opacity }) {
       ]}
     >
       <Pressable
-        onPress={() => router.push("/profile")}
+        onPress={handleProfilePress}
         style={({ pressed }) => [
           styles.profileButton,
           pressed && styles.pressed,
@@ -34,16 +56,18 @@ export default function HomeHeader({ user, opacity }) {
         </View>
 
         <View style={styles.userInfo}>
-          <Text style={styles.welcome}>ДОБРО ПОЖАЛОВАТЬ</Text>
+          <Text style={styles.welcome}>
+            {isAuthenticated ? "ДОБРО ПОЖАЛОВАТЬ" : "ГОСТЬ"}
+          </Text>
 
           <Text style={styles.userName} numberOfLines={1}>
-            {firstName} {lastName}
+            {userName}
           </Text>
         </View>
       </Pressable>
 
       <Pressable
-        onPress={() => router.push("/notifications")}
+        onPress={handleNotificationsPress}
         style={({ pressed }) => [
           styles.notificationButton,
           pressed && styles.notificationPressed,
