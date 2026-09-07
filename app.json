@@ -1,15 +1,20 @@
 {
   "expo": {
-    "name": "pivnitsa",
+    "name": "Пивница",
     "slug": "pivnitsa",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "pivnitsa",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pivnitsa.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.pivnitsa.app",
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -26,6 +31,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "588db1a8-7866-4490-8673-072c8a3acf5e"
+      }
     }
   }
 }

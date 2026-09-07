@@ -64,12 +64,12 @@ export default StyleSheet.create({
     paddingBottom: 40,
   },
 
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 20,
-    marginTop: 20,
-  },
+list: {
+display: "flex",
+flexDirection: "column",
+gap: 20,
+marginTop: 20,
+},
 
   notification: {
     minHeight: 100,
