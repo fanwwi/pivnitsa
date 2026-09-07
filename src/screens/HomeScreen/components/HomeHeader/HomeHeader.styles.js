@@ -10,6 +10,7 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginTop: "-20",
+    marginBottom: 30
   },
 
   profileButton: {

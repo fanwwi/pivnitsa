@@ -49,7 +49,7 @@ const MENU_ITEMS = [
     title: "Уведомления",
     description: "Настройки уведомлений",
     icon: Bell,
-    route: "/notifications",
+    route: "/notifications-settings",
   },
 ];
 

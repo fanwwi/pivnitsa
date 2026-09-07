@@ -4,7 +4,7 @@ export default StyleSheet.create({
   hero: {
     alignItems: "center",
 
-    marginTop: 48,
+    marginTop: 10,
     marginBottom: 42,
   },
 
