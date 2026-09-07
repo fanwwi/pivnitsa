@@ -7,7 +7,7 @@ const TEXT = "#EAE3C0";
 const TEXT_PRIMARY = "#F1EBD6";
 const TEXT_SECONDARY = "#A9A49C";
 
-const CARD = "rgba(255,255,255,0.055)";
+const CARD = "rgba(255,255,255,0.045)";
 
 export default StyleSheet.create({
   /*
@@ -19,8 +19,6 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#080706",
-    paddingTop: 30,
-    paddingBottom: 40,
   },
 
   background: {
@@ -29,6 +27,7 @@ export default StyleSheet.create({
 
   safeArea: {
     flex: 1,
+    paddingTop: 30,
   },
 
   /*
@@ -58,10 +57,10 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
 
-    backgroundColor: "rgba(255,255,255,0.055)",
+    backgroundColor: "rgba(255,255,255,0.045)",
 
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.07)",
+    borderColor: "rgba(255,255,255,0.065)",
   },
 
   pressed: {
@@ -112,8 +111,7 @@ export default StyleSheet.create({
   content: {
     paddingHorizontal: 20,
 
-    paddingTop: 28,
-
+    paddingTop: 30,
     paddingBottom: 145,
   },
 
@@ -124,12 +122,12 @@ export default StyleSheet.create({
   */
 
   intro: {
-    marginBottom: 20,
+    marginBottom: 22,
   },
 
   introTitle: {
-    fontSize: 24,
-    lineHeight: 30,
+    fontSize: 25,
+    lineHeight: 31,
 
     fontWeight: "600",
 
@@ -156,19 +154,19 @@ export default StyleSheet.create({
   selectedPreview: {
     minHeight: 76,
 
-    paddingHorizontal: 17,
+    paddingHorizontal: 18,
     paddingVertical: 14,
 
-    borderRadius: 16,
+    borderRadius: 17,
 
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
 
-    backgroundColor: CARD,
+    backgroundColor: "rgba(178,146,89,0.075)",
 
     borderWidth: 1,
-    borderColor: "rgba(178,146,89,0.24)",
+    borderColor: "rgba(178,146,89,0.30)",
 
     marginBottom: 30,
   },
@@ -191,8 +189,8 @@ export default StyleSheet.create({
   },
 
   selectedValue: {
-    fontSize: 20,
-    lineHeight: 25,
+    fontSize: 21,
+    lineHeight: 26,
 
     fontWeight: "600",
 
@@ -269,7 +267,7 @@ export default StyleSheet.create({
   timeButton: {
     width: "31.5%",
 
-    minHeight: 58,
+    height: 58,
 
     borderRadius: 15,
 
@@ -296,9 +294,9 @@ export default StyleSheet.create({
       height: 4,
     },
 
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.22,
 
-    shadowRadius: 8,
+    shadowRadius: 9,
 
     elevation: 4,
   },
@@ -363,10 +361,10 @@ export default StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
 
-    backgroundColor: "rgba(255,255,255,0.035)",
+    backgroundColor: "rgba(255,255,255,0.028)",
 
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.05)",
+    borderColor: "rgba(255,255,255,0.045)",
   },
 
   infoDot: {
@@ -400,7 +398,7 @@ export default StyleSheet.create({
 
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 150,
 
     paddingHorizontal: 20,
 
@@ -428,7 +426,7 @@ export default StyleSheet.create({
 
     overflow: "hidden",
 
-    shadowColor: "#B29259",
+    shadowColor: GOLD,
 
     shadowOffset: {
       width: 0,

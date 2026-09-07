@@ -21,10 +21,10 @@ import BookingSection from "./components/BookingSection/BookingSection";
 import styles from "./HomeScreen.styles";
 
 import useHomeProfile from "../../hooks/useHomeProfile";
-import useEvents from "../../hooks/useEvents";
 import useAuthStatus from "../../hooks/useAuthStatus";
 
 import Navbar from "../../components/Navbar/Navbar";
+import useEvents from "../../hooks/useEvents";
 
 const DEFAULT_DATE = "Дата";
 const DEFAULT_TIME = "Время";

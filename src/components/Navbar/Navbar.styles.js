@@ -6,7 +6,7 @@ export default StyleSheet.create({
 
     paddingHorizontal: 12,
     paddingTop: 8,
-    paddingBottom: 8,
+    paddingBottom: 30,
 
     backgroundColor: "#0C0A07",
   },

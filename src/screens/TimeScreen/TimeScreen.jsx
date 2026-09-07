@@ -1,40 +1,21 @@
-
-
 import { useMemo, useState } from "react";
-import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { ChevronLeft, Check, Clock3 } from "lucide-react-native";
 
 import styles from "./TimeScreen.styles";
 
-const START_HOUR = 20;
-const END_HOUR = 3;
+const START_HOUR = 19;
+const END_HOUR = 21.30;
 
 const createTimeSlots = () => {
   const slots = [];
 
-  // 20:00 - 23:30
-  for (let hour = START_HOUR; hour < 24; hour++) {
-    slots.push(`${String(hour).padStart(2, "0")}:00`);
-    slots.push(`${String(hour).padStart(2, "0")}:30`);
-  }
-
-  // 00:00 - 03:30
-  for (let hour = 0; hour <= END_HOUR; hour++) {
+  for (let hour = START_HOUR; hour <= END_HOUR; hour++) {
     slots.push(`${String(hour).padStart(2, "0")}:00`);
 
     if (hour < END_HOUR) {
-      slots.push(`${String(hour).padStart(2, "0")}:30`);
-    }
-
-    if (hour === END_HOUR) {
       slots.push(`${String(hour).padStart(2, "0")}:30`);
     }
   }
@@ -47,8 +28,7 @@ const TIME_SLOTS = createTimeSlots();
 export default function TimeScreen() {
   const params = useLocalSearchParams();
 
-  const initialTime =
-    typeof params.time === "string" ? params.time : null;
+  const initialTime = typeof params.time === "string" ? params.time : null;
 
   const [selectedTime, setSelectedTime] = useState(initialTime);
 
@@ -115,21 +95,13 @@ export default function TimeScreen() {
               pressed && styles.pressed,
             ]}
           >
-            <ChevronLeft
-              size={22}
-              color="#EAE3C0"
-              strokeWidth={1.8}
-            />
+            <ChevronLeft size={22} color="#EAE3C0" strokeWidth={1.8} />
           </Pressable>
 
           <View style={styles.headerTitleWrapper}>
-            <Text style={styles.headerEyebrow}>
-              БРОНИРОВАНИЕ
-            </Text>
+            <Text style={styles.headerEyebrow}>БРОНИРОВАНИЕ</Text>
 
-            <Text style={styles.headerTitle}>
-              Выберите время
-            </Text>
+            <Text style={styles.headerTitle}>Выберите время</Text>
           </View>
 
           <View style={styles.headerSpacer} />
@@ -144,9 +116,7 @@ export default function TimeScreen() {
           {/* INTRO */}
 
           <View style={styles.intro}>
-            <Text style={styles.introTitle}>
-              Во сколько вас ждать?
-            </Text>
+            <Text style={styles.introTitle}>Во сколько вас ждать?</Text>
 
             <Text style={styles.introText}>
               Выберите удобное время для вашего вечера в Пивнице.
@@ -157,22 +127,14 @@ export default function TimeScreen() {
 
           <View style={styles.selectedPreview}>
             <View style={styles.selectedPreviewContent}>
-              <Text style={styles.selectedLabel}>
-                ВЫБРАННОЕ ВРЕМЯ
-              </Text>
+              <Text style={styles.selectedLabel}>ВЫБРАННОЕ ВРЕМЯ</Text>
 
-              <Text style={styles.selectedValue}>
-                {selectedLabel}
-              </Text>
+              <Text style={styles.selectedValue}>{selectedLabel}</Text>
             </View>
 
             {selectedTime && (
               <View style={styles.selectedIcon}>
-                <Check
-                  size={18}
-                  color="#211A10"
-                  strokeWidth={2.5}
-                />
+                <Check size={18} color="#211A10" strokeWidth={2.5} />
               </View>
             )}
           </View>
@@ -181,15 +143,9 @@ export default function TimeScreen() {
 
           <View style={styles.timeSection}>
             <View style={styles.sectionHeader}>
-              <Clock3
-                size={17}
-                color="#B29259"
-                strokeWidth={1.8}
-              />
+              <Clock3 size={17} color="#B29259" strokeWidth={1.8} />
 
-              <Text style={styles.sectionTitle}>
-                ВРЕМЯ БРОНИРОВАНИЯ
-              </Text>
+              <Text style={styles.sectionTitle}>ВРЕМЯ БРОНИРОВАНИЯ</Text>
             </View>
 
             <View style={styles.timeGrid}>
@@ -219,11 +175,7 @@ export default function TimeScreen() {
 
                     {isSelected && (
                       <View style={styles.timeCheck}>
-                        <Check
-                          size={13}
-                          color="#211A10"
-                          strokeWidth={2.8}
-                        />
+                        <Check size={13} color="#211A10" strokeWidth={2.8} />
                       </View>
                     )}
                   </Pressable>
@@ -254,9 +206,7 @@ export default function TimeScreen() {
 
               !selectedTime && styles.confirmButtonDisabled,
 
-              pressed &&
-                selectedTime &&
-                styles.confirmPressed,
+              pressed && selectedTime && styles.confirmPressed,
             ]}
           >
             <LinearGradient
@@ -279,19 +229,14 @@ export default function TimeScreen() {
                 style={[
                   styles.confirmText,
 
-                  !selectedTime &&
-                    styles.confirmTextDisabled,
+                  !selectedTime && styles.confirmTextDisabled,
                 ]}
               >
                 ВЫБРАТЬ ВРЕМЯ
               </Text>
 
               {selectedTime && (
-                <Check
-                  size={19}
-                  color="#211A10"
-                  strokeWidth={2.5}
-                />
+                <Check size={19} color="#211A10" strokeWidth={2.5} />
               )}
             </LinearGradient>
           </Pressable>
