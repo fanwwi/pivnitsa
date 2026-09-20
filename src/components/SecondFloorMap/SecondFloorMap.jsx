@@ -262,12 +262,14 @@ export default function SecondFloorMap({
       return;
     }
 
+    // Нажали на уже выбранный столик
     if (selectedTableId === table.id) {
       setSelectedTableId(null);
       onTableSelect?.(null);
       return;
     }
 
+    // Новый выбранный столик
     setSelectedTableId(table.id);
 
     onTableSelect?.({
@@ -293,6 +295,8 @@ export default function SecondFloorMap({
               },
             ]}
           >
+            {/* FLOOR OBJECTS */}
+
             {MAP_OBJECTS.map((object) => {
               const image = FLOOR_OBJECTS[object.type];
 
@@ -317,12 +321,16 @@ export default function SecondFloorMap({
                     />
                   )}
 
-                  <View style={styles.smokingZoneLabelBox}>
-                    <Text style={styles.smokingZoneText}>{object.label}</Text>
-                  </View>
+                  {object.label && (
+                    <View style={styles.smokingZoneLabelBox}>
+                      <Text style={styles.smokingZoneText}>{object.label}</Text>
+                    </View>
+                  )}
                 </View>
               );
             })}
+
+            {/* TABLES */}
 
             {tables.map((table) => {
               const isBooked =
@@ -364,15 +372,7 @@ export default function SecondFloorMap({
                     style={styles.tableImage}
                   />
 
-                  <View
-                    style={[
-                      styles.tableNumber,
-                      isBooked && styles.tableNumberBooked,
-                      isSelected && styles.tableNumberSelected,
-                    ]}
-                  >
-                    <Text style={styles.tableNumberText}>{table.number}</Text>
-                  </View>
+                  {/* CAPACITY ONLY — NO TABLE NUMBER */}
 
                   <View
                     style={[

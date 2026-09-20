@@ -19,7 +19,7 @@ export default StyleSheet.create({
   backgroundOverlay: {
     position: "absolute",
     inset: 0,
-    backgroundColor: "#09080655",
+    backgroundColor: "#09080696",
   },
 
   scroll: {

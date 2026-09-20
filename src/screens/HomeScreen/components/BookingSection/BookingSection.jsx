@@ -4,7 +4,6 @@ import {
   CalendarDays,
   ChevronRight,
   Clock3,
-  Users,
   UtensilsCrossed,
 } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -14,7 +13,6 @@ import styles from "./BookingSection.styles";
 export default function BookingSection({
   selectedDate,
   selectedTime,
-  selectedGuests,
   selectedTable,
   displayedDate,
   opacity,
@@ -23,7 +21,6 @@ export default function BookingSection({
   const bookingParams = {
     date: selectedDate,
     time: selectedTime,
-    guests: selectedGuests,
     table: selectedTable,
     source: "home",
   };
@@ -41,16 +38,6 @@ export default function BookingSection({
       params: {
         ...bookingParams,
         selected: selectedTime,
-      },
-    });
-  };
-
-  const openGuestsScreen = () => {
-    router.push({
-      pathname: "/guests",
-      params: {
-        ...bookingParams,
-        selected: selectedGuests,
       },
     });
   };
@@ -99,7 +86,7 @@ export default function BookingSection({
       </View>
 
       <Text style={styles.bookingDescription}>
-        Выберите удобные дату, время и количество гостей.
+        Выберите удобные дату, время и столик.
       </Text>
 
       <View style={styles.bookingGrid}>
@@ -115,13 +102,6 @@ export default function BookingSection({
           value={selectedTime}
           icon={<Clock3 size={17} color="#B29259" />}
           onPress={openTimeScreen}
-        />
-
-        <BookingOption
-          label="ГОСТИ"
-          value={selectedGuests}
-          icon={<Users size={17} color="#B29259" />}
-          onPress={openGuestsScreen}
         />
 
         <BookingOption

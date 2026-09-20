@@ -26,7 +26,7 @@ export default StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "#0d0b08ad",
+    backgroundColor: "#0d0b08b3",
   },
 
   sideOverlay: {

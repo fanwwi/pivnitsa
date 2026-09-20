@@ -498,7 +498,7 @@ export default function FirstFloorMap({
       return;
     }
 
-    // Нажали на уже выбранный столик
+    // Снятие выбора
     if (selectedTableId === table.id) {
       setSelectedTableId(null);
       onTableSelect?.(null);
@@ -604,18 +604,6 @@ export default function FirstFloorMap({
                     resizeMode="contain"
                     style={styles.tableImage}
                   />
-
-                  {/* TABLE NUMBER */}
-
-                  <View
-                    style={[
-                      styles.tableNumber,
-                      isBooked && styles.tableNumberBooked,
-                      isSelected && styles.tableNumberSelected,
-                    ]}
-                  >
-                    <Text style={styles.tableNumberText}>{table.number}</Text>
-                  </View>
 
                   {/* CAPACITY */}
 
