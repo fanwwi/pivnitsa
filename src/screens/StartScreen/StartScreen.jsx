@@ -105,7 +105,7 @@ export default function StartScreen() {
       {/* BACKGROUND */}
 
       <Image
-        source={require("../../assets/startimage.png")}
+        source={require("../../assets/startimage.jpg")}
         style={styles.background}
         resizeMode="cover"
       />

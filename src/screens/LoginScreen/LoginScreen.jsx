@@ -426,7 +426,7 @@ export default function LoginScreen() {
       {/* BACKGROUND */}
 
       <Image
-        source={require("../../assets/startimage.png")}
+        source={require("../../assets/startimage.jpg")}
         style={styles.background}
         contentFit="cover"
       />

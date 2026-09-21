@@ -164,7 +164,7 @@ export default function HomeScreen() {
       {/* BACKGROUND */}
 
       <Image
-        source={require("../../assets/startimage.png")}
+        source={require("../../assets/startimage.jpg")}
         style={styles.background}
         contentFit="cover"
       />
