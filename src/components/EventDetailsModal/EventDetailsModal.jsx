@@ -16,7 +16,7 @@ import { CalendarDays, Clock3, Share2, X } from "lucide-react-native";
 
 import styles from "./EventDetailsModal.styles";
 
-const API_URL = "https://test--pivnitsa-backend--l8b8kf49s4rf.code.run";
+const API_URL = "https://test--pivnitsa-backend--l8b8kf49s4rf.code.run/";
 
 const MONTH_NAMES = [
   "января",

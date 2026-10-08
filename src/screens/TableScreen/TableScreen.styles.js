@@ -8,8 +8,11 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#100D09",
-    paddingBottom: 40,
+  },
+
+  scrollContent: {
     paddingTop: 20,
+    paddingBottom: 150,
   },
 
   // ======================================================
@@ -19,52 +22,134 @@ export default StyleSheet.create({
   header: {
     paddingHorizontal: 20,
     paddingTop: 15,
-    paddingBottom: 14,
+    paddingBottom: 18,
 
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
   },
 
-  eyebrow: {
-    color: "#B29259",
-    fontSize: 9,
-    fontWeight: "800",
-    letterSpacing: 2,
-    marginBottom: 2,
-  },
-
-  title: {
-    color: "#EAE3C0",
-    fontSize: 24,
-    fontWeight: "900",
-    letterSpacing: -0.5,
-  },
-
-  headerIcon: {
+  backButton: {
     width: 42,
     height: 42,
+
+    marginRight: 12,
 
     borderRadius: 13,
 
     alignItems: "center",
     justifyContent: "center",
 
-    backgroundColor: "rgba(178, 146, 89, 0.12)",
+    backgroundColor: "rgba(178, 146, 89, 0.10)",
 
     borderWidth: 1,
-    borderColor: "rgba(178, 146, 89, 0.3)",
+    borderColor: "rgba(178, 146, 89, 0.25)",
+  },
+
+  backButtonPressed: {
+    opacity: 0.65,
+    transform: [{ scale: 0.96 }],
+  },
+
+  headerText: {
+    flex: 1,
+  },
+
+  eyebrow: {
+    color: "#B29259",
+
+    fontSize: 9,
+    fontWeight: "800",
+
+    letterSpacing: 2,
+
+    marginBottom: 3,
+  },
+
+  title: {
+    color: "#EAE3C0",
+
+    fontSize: 24,
+    fontWeight: "900",
+
+    letterSpacing: -0.5,
   },
 
   // ======================================================
-  // FLOOR SWITCHER
+  // BOOKING INFO
   // ======================================================
 
-  floorSwitcher: {
-    marginHorizontal: 20,
-    marginBottom: 4,
+  bookingInfo: {
+    marginHorizontal: 16,
+    marginBottom: 14,
 
+    minHeight: 68,
+
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+
+    flexDirection: "row",
+    alignItems: "center",
+
+    borderRadius: 16,
+
+    backgroundColor: "#1B1711",
+
+    borderWidth: 1,
+    borderColor: "rgba(178, 146, 89, 0.20)",
+  },
+
+  infoItem: {
+    flex: 1,
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    minWidth: 0,
+  },
+
+  infoLabel: {
+    color: "rgba(234, 227, 192, 0.42)",
+
+    fontSize: 8,
+    fontWeight: "800",
+
+    letterSpacing: 1.2,
+
+    marginBottom: 4,
+  },
+
+  infoValue: {
+    color: "#EAE3C0",
+
+    fontSize: 12,
+    fontWeight: "800",
+
+    textAlign: "center",
+  },
+
+  infoDivider: {
+    width: 1,
+    height: 30,
+
+    backgroundColor: "rgba(178, 146, 89, 0.18)",
+  },
+
+  guestsValue: {
+    flexDirection: "row",
+    alignItems: "center",
+
+    gap: 5,
+  },
+
+  // ======================================================
+  // FLOOR SWITCH
+  // ======================================================
+
+  floorSwitch: {
     height: 48,
+
+    marginHorizontal: 20,
+    marginBottom: 8,
 
     padding: 4,
 
@@ -81,8 +166,6 @@ export default StyleSheet.create({
   floorButton: {
     flex: 1,
 
-    position: "relative",
-
     alignItems: "center",
     justifyContent: "center",
 
@@ -93,34 +176,17 @@ export default StyleSheet.create({
     backgroundColor: "#B29259",
   },
 
-  floorButtonPressed: {
-    opacity: 0.75,
-  },
-
   floorButtonText: {
     color: "rgba(234, 227, 192, 0.45)",
 
-    fontSize: 12,
-    fontWeight: "800",
+    fontSize: 11,
+    fontWeight: "900",
 
-    letterSpacing: 0.4,
+    letterSpacing: 0.6,
   },
 
   floorButtonTextActive: {
     color: "#211A10",
-  },
-
-  floorIndicator: {
-    position: "absolute",
-
-    bottom: 5,
-
-    width: 18,
-    height: 2,
-
-    borderRadius: 2,
-
-    backgroundColor: "#EAE3C0",
   },
 
   // ======================================================
@@ -128,12 +194,12 @@ export default StyleSheet.create({
   // ======================================================
 
   legend: {
-    height: 25,
+    minHeight: 34,
 
     marginHorizontal: 20,
     marginBottom: 4,
 
-    paddingHorizontal: 14,
+    paddingHorizontal: 8,
 
     flexDirection: "row",
     alignItems: "center",
@@ -156,26 +222,60 @@ export default StyleSheet.create({
     borderWidth: 1,
   },
 
+  legendFree: {
+    backgroundColor: "#B29259",
+    borderColor: "#D2B477",
+  },
+
   legendBooked: {
     backgroundColor: "#FF5757",
     borderColor: "#D86662",
   },
 
-  legendAvailable: {
-    backgroundColor: "#B29259",
-    borderColor: "#D2B477",
-  },
-
-  legendSelected: {
-    backgroundColor: "#FF7A00",
-    borderColor: "#FF7A00",
+  legendUnavailable: {
+    backgroundColor: "#4B443A",
+    borderColor: "#665D50",
   },
 
   legendText: {
-    color: "rgba(234, 227, 192, 0.62)",
+    color: "rgba(234, 227, 192, 0.58)",
+
+    fontSize: 8,
+    fontWeight: "600",
+  },
+
+  // ======================================================
+  // COUNTERS
+  // ======================================================
+
+  counters: {
+    marginHorizontal: 20,
+    marginBottom: 8,
+
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+
+    borderRadius: 10,
+
+    backgroundColor: "rgba(178, 146, 89, 0.06)",
+  },
+
+  counterText: {
+    color: "rgba(234, 227, 192, 0.50)",
+
+    fontSize: 8,
+    fontWeight: "700",
+  },
+
+  counterNumber: {
+    color: "#B29259",
 
     fontSize: 9,
-    fontWeight: "600",
+    fontWeight: "900",
   },
 
   // ======================================================
@@ -183,16 +283,124 @@ export default StyleSheet.create({
   // ======================================================
 
   mapContainer: {
-    flex: 1,
     width: "100%",
+
+    minHeight: 440,
+
+    marginTop: 2,
   },
 
   // ======================================================
-  // SECOND FLOOR
+  // LOADING
+  // ======================================================
+
+  loadingContainer: {
+    minHeight: 440,
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    paddingHorizontal: 30,
+  },
+
+  loadingText: {
+    marginTop: 14,
+
+    color: "rgba(234, 227, 192, 0.55)",
+
+    fontSize: 12,
+    fontWeight: "600",
+  },
+
+  // ======================================================
+  // ERROR
+  // ======================================================
+
+  errorContainer: {
+    minHeight: 440,
+
+    paddingHorizontal: 30,
+
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  errorIcon: {
+    width: 58,
+    height: 58,
+
+    marginBottom: 16,
+
+    borderRadius: 19,
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    backgroundColor: "rgba(178, 146, 89, 0.10)",
+
+    borderWidth: 1,
+    borderColor: "rgba(178, 146, 89, 0.25)",
+  },
+
+  errorTitle: {
+    color: "#EAE3C0",
+
+    fontSize: 17,
+    fontWeight: "900",
+
+    textAlign: "center",
+
+    marginBottom: 8,
+  },
+
+  errorText: {
+    maxWidth: 320,
+
+    color: "rgba(234, 227, 192, 0.48)",
+
+    fontSize: 11,
+    fontWeight: "500",
+
+    lineHeight: 17,
+
+    textAlign: "center",
+  },
+
+  retryButton: {
+    minHeight: 44,
+
+    marginTop: 18,
+
+    paddingHorizontal: 22,
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    borderRadius: 12,
+
+    backgroundColor: "#B29259",
+  },
+
+  retryButtonPressed: {
+    opacity: 0.72,
+    transform: [{ scale: 0.97 }],
+  },
+
+  retryText: {
+    color: "#211A10",
+
+    fontSize: 9,
+    fontWeight: "900",
+
+    letterSpacing: 1,
+  },
+
+  // ======================================================
+  // SECOND FLOOR FALLBACK
   // ======================================================
 
   secondFloor: {
-    flex: 1,
+    minHeight: 440,
 
     alignItems: "center",
     justifyContent: "center",
@@ -211,7 +419,7 @@ export default StyleSheet.create({
 
     borderRadius: 24,
 
-    backgroundColor: "rgba(178, 146, 89, 0.1)",
+    backgroundColor: "rgba(178, 146, 89, 0.10)",
 
     borderWidth: 1,
     borderColor: "rgba(178, 146, 89, 0.28)",
@@ -224,6 +432,8 @@ export default StyleSheet.create({
     fontWeight: "900",
 
     marginBottom: 8,
+
+    textAlign: "center",
   },
 
   secondFloorSubtitle: {
@@ -238,7 +448,156 @@ export default StyleSheet.create({
   },
 
   // ======================================================
-  // BOOKING PANEL
+  // SELECTED TABLE CARD
+  // ======================================================
+
+  selectedCard: {
+    marginHorizontal: 14,
+    marginTop: 10,
+
+    padding: 14,
+
+    borderRadius: 18,
+
+    backgroundColor: "#211A10",
+
+    borderWidth: 1,
+    borderColor: "rgba(178, 146, 89, 0.50)",
+
+    shadowColor: "#000",
+
+    shadowOffset: {
+      width: 0,
+      height: 7,
+    },
+
+    shadowOpacity: 0.3,
+    shadowRadius: 14,
+
+    elevation: 8,
+  },
+
+  selectedHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+
+    marginBottom: 14,
+  },
+
+  selectedIcon: {
+    width: 42,
+    height: 42,
+
+    marginRight: 10,
+
+    borderRadius: 12,
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    backgroundColor: "#B29259",
+  },
+
+  selectedHeaderText: {
+    flex: 1,
+  },
+
+  selectedEyebrow: {
+    color: "#B29259",
+
+    fontSize: 8,
+    fontWeight: "900",
+
+    letterSpacing: 1.4,
+
+    marginBottom: 2,
+  },
+
+  selectedTitle: {
+    color: "#EAE3C0",
+
+    fontSize: 17,
+    fontWeight: "900",
+  },
+
+  selectedDetails: {
+    flexDirection: "row",
+
+    paddingTop: 12,
+    marginBottom: 12,
+
+    borderTopWidth: 1,
+    borderTopColor: "rgba(178, 146, 89, 0.14)",
+  },
+
+  selectedDetail: {
+    flex: 1,
+  },
+
+  selectedDetailLabel: {
+    color: "rgba(234, 227, 192, 0.38)",
+
+    fontSize: 7,
+    fontWeight: "900",
+
+    letterSpacing: 1,
+
+    marginBottom: 4,
+  },
+
+  selectedDetailValue: {
+    color: "#EAE3C0",
+
+    fontSize: 12,
+    fontWeight: "800",
+  },
+
+  // ======================================================
+  // BOOK BUTTON
+  // ======================================================
+
+  bookButton: {
+    minHeight: 46,
+
+    paddingHorizontal: 16,
+
+    marginTop: 2,
+
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+
+    gap: 7,
+
+    borderRadius: 12,
+
+    backgroundColor: "#D2B477",
+  },
+
+  bookButtonPressed: {
+    transform: [{ scale: 0.97 }],
+    opacity: 0.8,
+  },
+
+  bookButtonText: {
+    color: "#211A10",
+
+    fontSize: 9,
+    fontWeight: "900",
+
+    letterSpacing: 0.9,
+  },
+
+  // ======================================================
+  // BOTTOM
+  // ======================================================
+
+  bottomSpace: {
+    height: 20,
+  },
+
+  // ======================================================
+  // LEGACY / COMPATIBILITY
   // ======================================================
 
   bookingPanel: {
@@ -261,43 +620,16 @@ export default StyleSheet.create({
     borderColor: "rgba(178, 146, 89, 0.55)",
 
     shadowColor: "#000",
+
     shadowOffset: {
       width: 0,
       height: 6,
     },
+
     shadowOpacity: 0.3,
     shadowRadius: 12,
 
     elevation: 8,
-  },
-
-  bookingInfo: {
-    flex: 1,
-
-    flexDirection: "row",
-    alignItems: "center",
-
-    minWidth: 0,
-  },
-
-  bookingTableIcon: {
-    width: 42,
-    height: 42,
-
-    marginRight: 10,
-
-    borderRadius: 12,
-
-    alignItems: "center",
-    justifyContent: "center",
-
-    backgroundColor: "#B29259",
-  },
-
-  bookingTableNumber: {
-    color: "#211A10",
-    fontSize: 16,
-    fontWeight: "900",
   },
 
   bookingText: {
@@ -352,41 +684,5 @@ export default StyleSheet.create({
     fontWeight: "600",
 
     marginLeft: 3,
-  },
-
-  // ======================================================
-  // BOOK BUTTON
-  // ======================================================
-
-  bookButton: {
-    minHeight: 46,
-
-    paddingHorizontal: 14,
-
-    marginLeft: 8,
-
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-
-    gap: 7,
-
-    borderRadius: 12,
-
-    backgroundColor: "#D2B477",
-  },
-
-  bookButtonPressed: {
-    transform: [{ scale: 0.96 }],
-    opacity: 0.8,
-  },
-
-  bookButtonText: {
-    color: "#211A10",
-
-    fontSize: 9,
-    fontWeight: "900",
-
-    letterSpacing: 0.8,
   },
 });

@@ -18,7 +18,7 @@ import * as SecureStore from "expo-secure-store";
 
 import styles from "./RegisterScreen.styles";
 
-const API_URL = "https://test--pivnitsa-backend--l8b8kf49s4rf.code.run";
+const API_URL = "https://test--pivnitsa-backend--l8b8kf49s4rf.code.run/";
 
 const TOKEN_KEY = "accessToken";
 const REGISTRATION_TOKEN_KEY = "registrationToken";

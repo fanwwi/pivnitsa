@@ -4,6 +4,7 @@ import {
   CalendarDays,
   ChevronRight,
   Clock3,
+  Users,
   UtensilsCrossed,
 } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -13,6 +14,7 @@ import styles from "./BookingSection.styles";
 export default function BookingSection({
   selectedDate,
   selectedTime,
+  selectedGuests,
   selectedTable,
   displayedDate,
   opacity,
@@ -21,9 +23,14 @@ export default function BookingSection({
   const bookingParams = {
     date: selectedDate,
     time: selectedTime,
+    guests: selectedGuests,
     table: selectedTable,
     source: "home",
   };
+
+  // ======================================================
+  // DATE
+  // ======================================================
 
   const openDateScreen = () => {
     router.push({
@@ -31,6 +38,10 @@ export default function BookingSection({
       params: bookingParams,
     });
   };
+
+  // ======================================================
+  // TIME
+  // ======================================================
 
   const openTimeScreen = () => {
     router.push({
@@ -42,12 +53,34 @@ export default function BookingSection({
     });
   };
 
+  // ======================================================
+  // GUESTS
+  // ======================================================
+
+  const openGuestsScreen = () => {
+    router.push({
+      pathname: "/guests",
+      params: {
+        ...bookingParams,
+        selected: selectedGuests,
+      },
+    });
+  };
+
+  // ======================================================
+  // TABLE
+  // ======================================================
+
   const openTableScreen = () => {
     router.push({
       pathname: "/table",
       params: bookingParams,
     });
   };
+
+  // ======================================================
+  // BOOKING
+  // ======================================================
 
   const handleBooking = () => {
     router.push({
@@ -73,6 +106,8 @@ export default function BookingSection({
         },
       ]}
     >
+      {/* HEADER */}
+
       <View style={styles.bookingHeader}>
         <View style={styles.bookingIcon}>
           <UtensilsCrossed size={19} color="#B29259" strokeWidth={1.6} />
@@ -86,8 +121,10 @@ export default function BookingSection({
       </View>
 
       <Text style={styles.bookingDescription}>
-        Выберите удобные дату, время и столик.
+        Выберите дату, время, количество гостей и столик.
       </Text>
+
+      {/* OPTIONS */}
 
       <View style={styles.bookingGrid}>
         <BookingOption
@@ -105,12 +142,30 @@ export default function BookingSection({
         />
 
         <BookingOption
+          label="ГОСТИ"
+          value={
+            selectedGuests
+              ? `${selectedGuests} ${
+                  Number(selectedGuests) === 1
+                    ? "гость"
+                    : Number(selectedGuests) >= 2 && Number(selectedGuests) <= 4
+                      ? "гостя" : ""
+                }`
+              : "Не выбрано"
+          }
+          icon={<Users size={17} color="#B29259" />}
+          onPress={openGuestsScreen}
+        />
+
+        <BookingOption
           label="СТОЛИК"
-          value={selectedTable}
+          value={selectedTable || "Не выбран"}
           icon={<UtensilsCrossed size={17} color="#B29259" />}
           onPress={openTableScreen}
         />
       </View>
+
+      {/* BOOK BUTTON */}
 
       <Pressable
         onPress={handleBooking}
@@ -155,7 +210,7 @@ function BookingOption({ label, value, icon, onPress }) {
         <Text style={styles.optionLabel}>{label}</Text>
 
         <Text style={styles.optionValue} numberOfLines={1}>
-          {value}
+          {value || "Не выбрано"}
         </Text>
       </View>
     </Pressable>

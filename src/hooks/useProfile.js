@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
 
-const API_URL = "https://test--pivnitsa-backend--l8b8kf49s4rf.code.run";
+const API_URL = "https://test--pivnitsa-backend--l8b8kf49s4rf.code.run/";
 
 const TOKEN_KEY = "accessToken";
 
